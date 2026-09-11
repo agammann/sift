@@ -1,0 +1,18 @@
+{
+  "format": "Sift collection profile",
+  "format_version": 1,
+  "example_only": true,
+  "collection": { "name": "Example project" },
+  "sources": [
+    {
+      "name": "Example documentation",
+      "url": "https://docs.example.com/docs/start",
+      "origin": "https://docs.example.com",
+      "allowed_paths": ["/docs"],
+      "version": "1.0",
+      "version_provenance": "user-supplied label",
+      "limits": { "pages": 50, "depth": 3, "concurrency": 2, "retention": 2 }
+    }
+  ],
+  "note": "Illustrative configuration using a reserved example domain, not collected live data. Actual exports include stable IDs and timestamps. Profiles are export-only in 0.1.0; recreate sources through the UI."
+}

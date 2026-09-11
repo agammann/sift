@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.tgz
+*.sqlite*
+.cache/
+test-results/
+artifacts/

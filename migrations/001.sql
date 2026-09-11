@@ -1,0 +1,18 @@
+CREATE TABLE collections(id TEXT PRIMARY KEY, name TEXT NOT NULL, created_at TEXT NOT NULL);
+CREATE TABLE sources(id TEXT PRIMARY KEY, collection_id TEXT NOT NULL REFERENCES collections(id) ON DELETE CASCADE, name TEXT NOT NULL, url TEXT NOT NULL, origin TEXT NOT NULL, allowed_paths TEXT NOT NULL, version TEXT, version_provenance TEXT, limits TEXT NOT NULL, created_at TEXT NOT NULL, last_checked TEXT, last_success TEXT, status TEXT NOT NULL DEFAULT 'never_checked');
+CREATE TABLE jobs(id TEXT PRIMARY KEY, source_id TEXT NOT NULL REFERENCES sources(id) ON DELETE CASCADE, status TEXT NOT NULL, started_at TEXT NOT NULL, finished_at TEXT, processed INTEGER NOT NULL DEFAULT 0, discovered INTEGER NOT NULL DEFAULT 0, error TEXT);
+CREATE UNIQUE INDEX one_active_job ON jobs(source_id) WHERE status='running';
+CREATE TABLE outcomes(id INTEGER PRIMARY KEY, job_id TEXT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE, url TEXT NOT NULL, outcome TEXT NOT NULL, message TEXT, checked_at TEXT NOT NULL);
+CREATE TABLE documents(id TEXT PRIMARY KEY, source_id TEXT NOT NULL REFERENCES sources(id) ON DELETE CASCADE, original_url TEXT NOT NULL, canonical_url TEXT NOT NULL, current_revision TEXT, active INTEGER NOT NULL DEFAULT 1, last_checked TEXT, last_success TEXT, last_outcome TEXT, etag TEXT, last_modified TEXT, UNIQUE(source_id,original_url));
+CREATE TABLE revisions(id TEXT PRIMARY KEY, document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE, hash TEXT NOT NULL, title TEXT NOT NULL, headings TEXT NOT NULL, language TEXT, content TEXT NOT NULL, fetched_at TEXT NOT NULL, source_modified TEXT, warnings TEXT NOT NULL);
+CREATE TABLE chunks(id INTEGER PRIMARY KEY, document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE, revision_id TEXT NOT NULL REFERENCES revisions(id) ON DELETE CASCADE, ordinal INTEGER NOT NULL, title TEXT NOT NULL, heading TEXT NOT NULL, passage TEXT NOT NULL);
+CREATE VIRTUAL TABLE chunks_fts USING fts5(title,heading,passage,content='chunks',content_rowid='id',tokenize='unicode61');
+CREATE TRIGGER chunks_ai AFTER INSERT ON chunks BEGIN INSERT INTO chunks_fts(rowid,title,heading,passage) VALUES(new.id,new.title,new.heading,new.passage); END;
+CREATE TRIGGER chunks_ad AFTER DELETE ON chunks BEGIN INSERT INTO chunks_fts(chunks_fts,rowid,title,heading,passage) VALUES('delete',old.id,old.title,old.heading,old.passage); END;
+CREATE TRIGGER chunks_au AFTER UPDATE ON chunks BEGIN INSERT INTO chunks_fts(chunks_fts,rowid,title,heading,passage) VALUES('delete',old.id,old.title,old.heading,old.passage); INSERT INTO chunks_fts(rowid,title,heading,passage) VALUES(new.id,new.title,new.heading,new.passage); END;
+CREATE TABLE changes(id INTEGER PRIMARY KEY, collection_id TEXT NOT NULL REFERENCES collections(id) ON DELETE CASCADE, source_id TEXT NOT NULL REFERENCES sources(id) ON DELETE CASCADE, document_id TEXT REFERENCES documents(id) ON DELETE CASCADE, revision_id TEXT, kind TEXT NOT NULL, url TEXT NOT NULL, checked_at TEXT NOT NULL, message TEXT);
+CREATE INDEX documents_source ON documents(source_id);
+CREATE INDEX revisions_document ON revisions(document_id,fetched_at);
+CREATE INDEX chunks_document ON chunks(document_id);
+CREATE INDEX changes_collection ON changes(collection_id,id);
+PRAGMA user_version=1;

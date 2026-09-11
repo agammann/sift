@@ -108,4 +108,3 @@ The source is split into storage, network transport, extraction, crawl orchestra
 - [Third-party notices](THIRD_PARTY_NOTICES.md)
 
 Ownership details and an open-source license have not been selected. `UNLICENSED` is package metadata indicating that this release does not grant an open-source license; it is not an invented ownership claim. Public source visibility does not itself grant an open-source license. This release should not be described as production ready solely because its build and tests pass.
-
