@@ -2,6 +2,8 @@
 
 Generated from the exact installed dependency tree, including development tools. Upstream license text is preserved. This does not license Sift itself; Sift ownership and licensing remain the owner's decision.
 
+The retired Unicode source browser link keeps its original visible text and points to the current Unicode tools repository.
+
 ## @esbuild/win32-x64@0.28.2
 
 Declared license: "MIT"
@@ -649,7 +651,7 @@ UNICODE, INC. LICENSE AGREEMENT - DATA FILES AND SOFTWARE
 Unicode Data Files include all data files under the directories
 http://www.unicode.org/Public/, http://www.unicode.org/reports/,
 http://www.unicode.org/cldr/data/, http://source.icu-project.org/repos/icu/, and
-http://www.unicode.org/utility/trac/browser/.
+[http://www.unicode.org/utility/trac/browser/](https://github.com/unicode-org/unicodetools).
 
 Unicode Data Files do not include PDF online code charts under the
 directory http://www.unicode.org/Public/.
@@ -658,7 +660,7 @@ Software includes any source code published in the Unicode Standard
 or under the directories
 http://www.unicode.org/Public/, http://www.unicode.org/reports/,
 http://www.unicode.org/cldr/data/, http://source.icu-project.org/repos/icu/, and
-http://www.unicode.org/utility/trac/browser/.
+[http://www.unicode.org/utility/trac/browser/](https://github.com/unicode-org/unicodetools).
 
 NOTICE TO USER: Carefully read the following legal agreement.
 BY DOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING UNICODE INC.'S
@@ -8310,7 +8312,7 @@ UNICODE, INC. LICENSE AGREEMENT - DATA FILES AND SOFTWARE
 Unicode Data Files include all data files under the directories
 http://www.unicode.org/Public/, http://www.unicode.org/reports/,
 http://www.unicode.org/cldr/data/, http://source.icu-project.org/repos/icu/, and
-http://www.unicode.org/utility/trac/browser/.
+[http://www.unicode.org/utility/trac/browser/](https://github.com/unicode-org/unicodetools).
 
 Unicode Data Files do not include PDF online code charts under the
 directory http://www.unicode.org/Public/.
@@ -8319,7 +8321,7 @@ Software includes any source code published in the Unicode Standard
 or under the directories
 http://www.unicode.org/Public/, http://www.unicode.org/reports/,
 http://www.unicode.org/cldr/data/, http://source.icu-project.org/repos/icu/, and
-http://www.unicode.org/utility/trac/browser/.
+[http://www.unicode.org/utility/trac/browser/](https://github.com/unicode-org/unicodetools).
 
 NOTICE TO USER: Carefully read the following legal agreement.
 BY DOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING UNICODE INC.'S

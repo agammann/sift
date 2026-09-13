@@ -1,6 +1,9 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 const packages = new Map();
+const retiredUnicodeUrl = "http://www.unicode.org/utility/trac/browser/";
+const unicodeSourceLink = `[${retiredUnicodeUrl}](https://github.com/unicode-org/unicodetools)`;
+const linkNote = "The retired Unicode source browser link keeps its original visible text and points to the current Unicode tools repository.";
 for (const item of await readdir("node_modules/.pnpm")) {
   const root = join("node_modules/.pnpm", item, "node_modules");
   let entries;
@@ -29,6 +32,7 @@ for (const item of await readdir("node_modules/.pnpm")) {
             licenses += `\n${f}\n\n${await readFile(join(path, f), "utf8")}\n`;
           } catch {}
         }
+      licenses = licenses.replaceAll(retiredUnicodeUrl, unicodeSourceLink);
       packages.set(
         key,
         `## ${key}\n\nDeclared license: ${JSON.stringify(p.license || p.licenses || "Not declared")}\n\n${licenses || "No root license file found; consult the upstream package for terms."}`,
@@ -38,7 +42,7 @@ for (const item of await readdir("node_modules/.pnpm")) {
 }
 await writeFile(
   "THIRD_PARTY_NOTICES.md",
-  `# Third-party notices\n\nGenerated from the exact installed dependency tree, including development tools. Upstream license text is preserved. This does not license Sift itself; Sift ownership and licensing remain the owner's decision.\n\n${[
+  `# Third-party notices\n\nGenerated from the exact installed dependency tree, including development tools. Upstream license text is preserved. This does not license Sift itself; Sift ownership and licensing remain the owner's decision.\n\n${linkNote}\n\n${[
     ...packages.entries(),
   ]
     .sort(([a], [b]) => a.localeCompare(b))

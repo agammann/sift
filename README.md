@@ -2,6 +2,8 @@
 
 **Clean documentation. Clear sources.**
 
+[Visit the Sift website](https://sift-docs.alx21.chatgpt.site/) for an overview and downloads.
+
 Sift turns selected public documentation sites into persistent project collections. Search the collected evidence in a local interface, inspect source URLs and retained revisions, and give a coding assistant access through five read-only MCP tools.
 
 Sift 0.1.0 is a local, single-user first release. It uses TypeScript, Node.js 24, SQLite FTS5, React/Vite and the official MCP TypeScript SDK. No account, paid service, model API key or telemetry is involved.
@@ -10,7 +12,7 @@ Sift 0.1.0 is a local, single-user first release. It uses TypeScript, Node.js 24
 
 Requires **Node.js 24.15 or later in the Node 24 line**. Node 22 and Node 25+ are not supported by this release. Node's built-in SQLite avoids platform-specific native npm addons.
 
-With a local copy of `sift-local-0.1.0.tgz`:
+Download [Sift 0.1.0](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.0.tgz) and its [SHA256 checksum](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.0.tgz.sha256). Run these commands from the folder containing the downloaded archive:
 
 ```sh
 npm install --global ./sift-local-0.1.0.tgz
