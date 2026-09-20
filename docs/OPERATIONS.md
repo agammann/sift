@@ -1,5 +1,25 @@
 # Upgrade, retention and recovery
 
+[Back to the README](../README.md)
+
+## Data location
+
+| Platform | Default database |
+| --- | --- |
+| Windows | `%LOCALAPPDATA%\Sift\sift.sqlite` |
+| macOS | `~/Library/Application Support/Sift/sift.sqlite` |
+| Linux | `$XDG_DATA_HOME/sift/sift.sqlite`, or `~/.local/share/sift/sift.sqlite` |
+
+Run `sift doctor` while the management process is stopped to see the exact path and database health. For an extracted archive, replace `sift` in commands throughout this guide with `node package/dist/cli.js`, running from the extraction folder.
+
+Set `SIFT_DATA_DIR` to a directory, or pass `--db ABSOLUTE_DATABASE_FILE` to use a custom workspace. Use the same database for management and MCP. In 0.1.1, **Connect → Copy configuration** includes the running executable and database paths automatically.
+
+## Start and stop
+
+Run `sift start` and open `http://127.0.0.1:4587`. Keep the terminal open; Ctrl+C stops management and cancels active work. To use another port, run `sift start --port 4588` and open `http://127.0.0.1:4588`. Use `127.0.0.1`, not `localhost`.
+
+The browser interface needs the management process. An assistant starts its own stdio MCP process and can read previously collected data while management is stopped. There is no background startup service or refresh scheduler.
+
 ## Upgrade
 
 1. Create and verify a backup in the UI, or stop Sift and run `sift backup NEW_PATH`.
@@ -10,6 +30,10 @@
 Migrations are versioned in `migrations/`. Before applying one, Sift writes a consistent `*.pre-migration-*.sqlite` backup. Migration statements run inside a transaction and roll back on failure. A database with a newer unsupported `user_version` is opened for checking only and rejected without modification. Use a compatible newer release or restore a pre-upgrade backup with the matching older release; never manually decrement `user_version`.
 
 ## Backup and restore
+
+In the interface, open **Backup & restore → Create backup**. Wait for **Backup verified** and save the displayed path. For a CLI backup, stop management first, then run `sift backup ./sift-backup.sqlite` from a folder where that filename does not already exist. If using `--db`, include it in this command too.
+
+To restore, use **Backup & restore**, enter the full backup path, type `REPLACE ALL DATA`, and choose **Validate and restore**. This replaces the entire workspace, not just the selected collection. Cancel running crawls first. Check the reported recovery-copy path and reopen a collection after completion.
 
 Backups use Node SQLite's online backup API and then SQLite integrity/foreign-key checks. An existing output path is rejected. The UI stores backups beside the database in `backups/`; the CLI accepts a new path. Copy completed backup files to another disk using ordinary file tools for protection against disk failure.
 

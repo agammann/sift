@@ -1,6 +1,6 @@
 {
   "name": "sift-local",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Clean documentation. Clear sources. Local documentation collections and read-only MCP access.",
   "type": "module",
   "private": true,
@@ -15,6 +15,7 @@
   "files": [
     "dist",
     "README.md",
+    "CONTRIBUTING.md",
     "docs",
     "migrations",
     "examples",

@@ -80,3 +80,16 @@ export function Markdown({ text }: { text: string }) {
     </div>
   );
 }
+// Heading metadata is Markdown, but labels inside buttons must stay inline
+// and must not introduce nested links, images, or source-provided HTML.
+export function HeadingLabel({ text }: { text: string }) {
+  return (
+    <ReactMarkdown
+      skipHtml
+      allowedElements={["em", "strong", "code"]}
+      unwrapDisallowed
+    >
+      {text}
+    </ReactMarkdown>
+  );
+}

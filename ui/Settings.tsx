@@ -4,14 +4,19 @@ import { Button, Field } from "./components.js";
 export function Connect({
   cid,
   act,
+  launch,
 }: {
   cid: string;
   act: (f: () => Promise<any>) => Promise<void>;
+  launch: { command: string; args: string[] };
 }) {
   const [diagnostics, setDiagnostics] = useState<any>(null);
   const config = {
     mcpServers: {
-      sift: { command: "sift", args: ["mcp", "--collections", cid] },
+      sift: {
+        command: launch.command,
+        args: [...launch.args, "--collections", cid],
+      },
     },
   };
   return (
@@ -24,9 +29,9 @@ export function Connect({
       <section className="panel">
         <h3>Local stdio configuration</h3>
         <p>
-          After installing the package, add this server to your assistant’s MCP
-          settings. Use the absolute path to the Sift executable if your
-          assistant does not inherit your shell’s PATH.
+          Add this server to your assistant’s local MCP settings. These absolute
+          paths use the running Sift installation and this workspace, including
+          when you extracted the archive without installing a global command.
         </p>
         <pre>{JSON.stringify(config, null, 2)}</pre>
         <Button
@@ -39,10 +44,8 @@ export function Connect({
           Copy configuration
         </Button>
         <p className="footnote">
-          For a custom database, add <code>--db</code> and its absolute path to
-          args. If your client cannot launch Windows command shims, use{" "}
-          <code>node</code> with the absolute path to Sift’s{" "}
-          <code>dist/cli.js</code> as the first argument. See the MCP guide for
+          This configuration is for an assistant running on this computer. After
+          moving or upgrading Sift or Node, copy it again. See the MCP guide for
           Codex TOML and other clients.
         </p>
       </section>

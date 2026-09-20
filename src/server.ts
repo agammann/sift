@@ -78,7 +78,15 @@ export async function startServer(
         body = raw ? JSON.parse(raw) : {};
       }
       if (path === "/api/session" && req.method === "GET")
-        return send({ token, version: VERSION, health: store.health() });
+        return send({
+          token,
+          version: VERSION,
+          health: store.health(),
+          mcpLaunch: {
+            command: process.execPath,
+            args: [resolve(options.cli), "mcp", "--db", store.file],
+          },
+        });
       if (path === "/api/collections" && req.method === "GET")
         return send({ collections: store.collections() });
       if (path === "/api/collections" && req.method === "POST")

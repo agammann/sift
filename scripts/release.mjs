@@ -12,6 +12,7 @@ try {
     "dist",
     "migrations",
     "README.md",
+    "CONTRIBUTING.md",
     "docs",
     "examples",
     "CHANGELOG.md",

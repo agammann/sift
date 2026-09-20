@@ -2,111 +2,70 @@
 
 **Clean documentation. Clear sources.**
 
-[Visit the Sift website](https://sift-docs.alx21.chatgpt.site/) for an overview and downloads.
+Collect the public documentation your project needs, search it locally, and let your coding assistant retrieve passages with source URLs and revision history through MCP.
 
-Sift turns selected public documentation sites into persistent project collections. Search the collected evidence in a local interface, inspect source URLs and retained revisions, and give a coding assistant access through five read-only MCP tools.
+[Website](https://sift-docs.alx21.chatgpt.site/) · [Download 0.1.1](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.1.tgz) · [Getting started](docs/GETTING_STARTED.md) · [MCP setup](docs/MCP.md)
 
-Sift 0.1.0 is a local, single-user first release. It uses TypeScript, Node.js 24, SQLite FTS5, React/Vite and the official MCP TypeScript SDK. No account, paid service, model API key or telemetry is involved.
+## What Sift does
 
-## Install the packaged release
+1. **Collect:** choose public documentation URLs, allowed paths, and optional version labels. Refresh manually when you need new content.
+2. **Inspect:** search retained pages, open their original sources, compare refresh outcomes, and read previous revisions.
+3. **Connect:** expose selected collections to a local coding assistant through five read only MCP tools.
 
-Requires **Node.js 24.15 or later in the Node 24 line**. Node 22 and Node 25+ are not supported by this release. Node's built-in SQLite avoids platform-specific native npm addons.
+Sift 0.1.1 is a local application for one user. Your collections live in a SQLite database on your computer. No Sift account, model API key, paid service, or telemetry is required. The public website provides information and downloads; the application runs on your machine.
 
-Download [Sift 0.1.0](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.0.tgz) and its [SHA256 checksum](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.0.tgz.sha256). Run these commands from the folder containing the downloaded archive:
+## Quick start
 
-```sh
-npm install --global ./sift-local-0.1.0.tgz
-sift version
-sift doctor
-sift start
-```
+Requires **Node.js 24.15 or later within the Node 24 release line**. Select Node 24 on the [official download page](https://nodejs.org/en/download), then open a new terminal and check `node --version`. Node 22 and Node 25 or later are not supported by this release. Windows has been tested; macOS and Linux execution has not yet been verified.
 
-On Windows, use `npm.cmd` / `sift.cmd` if PowerShell execution policy blocks command scripts. Open **http://127.0.0.1:4587**. Keep the terminal running; Ctrl+C stops the management service and cancels active jobs. There is no background refresh scheduler in this release. A separately launched stdio MCP server can read stored data while the management service is stopped.
-
-Alternatively, extract the archive and run without installing:
+1. Download the [Sift archive](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.1.tgz) and [SHA256 checksum](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.1.tgz.sha256).
+2. Put the archive in a new folder you will keep, and open a terminal in that folder. See the [installation guide](docs/GETTING_STARTED.md) for checksum commands and Windows instructions.
+3. Extract and start Sift:
 
 ```sh
-tar -xzf sift-local-0.1.0.tgz
+tar -xzf sift-local-0.1.1.tgz
+node package/dist/cli.js version
+node package/dist/cli.js doctor
 node package/dist/cli.js start
 ```
 
-The packaged backend and interface are bundled. Installation downloads no runtime dependencies and runs no install scripts. The source checkout needs the pinned development dependencies to build.
+Expect `Sift 0.1.1`, a doctor result with `"ok": true`, and a startup message containing `http://127.0.0.1:4587`.
 
-## First collection
+4. Open **http://127.0.0.1:4587** in your browser. Keep the terminal running. Press **Ctrl+C** to stop.
 
-1. Choose **Create your first collection** and enter your project's name.
-2. Choose **Add source**. Enter a public documentation URL and explicit allowed paths, such as `/docs` and `/guides`.
-3. Optionally supply a version label. Sift records its provenance as user supplied; it never guesses a software version.
-4. Review the limits and choose **Save source**. This saves configuration without fetching.
-5. Choose **Refresh**. **Inspect** shows progress, cancellation, documents, individual outcomes and recent jobs.
-6. Use **Search**, filter by source/version, and open a passage to inspect its full revision and original evidence.
-7. Use **Connect** to export a profile, get an MCP configuration and test a real stdio connection.
-8. Refresh manually to record changes. Use **Backup & restore** to protect the whole workspace.
+The archive includes the built interface and backend. This quick start requires neither cloning the repository nor installing development dependencies. To start Sift next time, run `node package/dist/cli.js start` from the same folder. Collections persist between runs.
 
-A partial collection is useful but incomplete. A failed check preserves previous successful content with a warning. Only an actual 404 or 410 confirms unavailability. Sitemap absence does not imply deletion. A fetch timestamp does not prove upstream documentation is current.
+### Install the packaged release
 
-## Data and commands
+If you prefer a `sift` command, the [installation guide](docs/GETTING_STARTED.md#optional-install-the-sift-command) covers installation with npm. The downloadable `.tgz` is the release package; Sift is not published to the npm registry.
 
-Data is independent of the repository and working directory:
+## Your first collection
 
-| Platform | Default directory | Verification |
-| --- | --- | --- |
-| Windows | `%LOCALAPPDATA%\Sift` | Tested locally on Windows with Node 24.19.0 |
-| macOS | `~/Library/Application Support/Sift` | Documented; not executed on macOS in this build |
-| Linux | `$XDG_DATA_HOME/sift`, or `~/.local/share/sift` | Documented; not executed on Linux in this build |
+1. Choose **Create your first collection** and give it a name.
+2. Choose **Add source**. Enter a public documentation **Start URL** and matching **Allowed paths**, such as `/docs`. Use commas for multiple paths.
+3. Choose **Save source**, then **Refresh**. Saving alone does not fetch pages. Use **Inspect** to see outcomes and warnings.
+4. Open **Search** and try a word you know appears on a collected page. Open a result to read the retained revision and source details.
+5. Open **Connect**, choose **Test MCP connection**, then follow the [MCP setup guide](docs/MCP.md) to configure your assistant.
 
-Set `SIFT_DATA_DIR` or pass `--db ABSOLUTE_PATH` to every relevant command to use another workspace. MCP and management must point at the same database. The Connect diagnostics automatically use the current database.
+For a small, repeatable walkthrough, use the [one page first collection](docs/GETTING_STARTED.md#try-a-one-page-collection). The built in connection test checks Sift's MCP process; your assistant still needs its own configuration.
 
-```sh
-sift start --port 4587
-sift mcp --collections COLLECTION_ID
-sift doctor
-sift backup /absolute/path/new-backup.sqlite
-sift restore /absolute/path/backup.sqlite --confirm "REPLACE ALL DATA"
-sift version
-```
+## Documentation
 
-The UI can back up while running. Stop the management service before using CLI commands that acquire its writer lock. Backups refuse to overwrite an existing file. Restore validates and stages the backup, saves a recovery copy, then replaces data in a SQLite transaction. Explicit confirmation is required. Existing MCP clients keep the same SQLite file and see the committed restored contents; collection allowlists continue to apply.
+| I want to… | Read |
+| --- | --- |
+| Install, verify the download, and collect my first page | [Getting started](docs/GETTING_STARTED.md) |
+| Connect Codex or another local MCP client | [MCP setup and tool reference](docs/MCP.md) |
+| Find my data, back it up, upgrade, or troubleshoot | [Operations](docs/OPERATIONS.md) |
+| Build from source or propose a change | [Development and contributions](CONTRIBUTING.md) |
+| Understand crawling, storage, and access boundaries | [Architecture](docs/ARCHITECTURE.md) |
+| See what was tested and what remains unverified | [Current acceptance checks](docs/REAL_WORLD_VERIFICATION.md) · [0.1.0 report](docs/VERIFICATION.md) |
+| Prepare a release | [Release procedure](docs/RELEASING.md) |
+| See release history and dependency notices | [Changelog](CHANGELOG.md) · [Third party notices](THIRD_PARTY_NOTICES.md) |
 
-## MCP
+## Scope and status
 
-```json
-{
-  "mcpServers": {
-    "sift": {
-      "command": "sift",
-      "args": ["mcp", "--collections", "YOUR_COLLECTION_ID"]
-    }
-  }
-}
-```
+Sift collects public, server rendered UTF-8 HTML. It does not sign in to websites, render JavaScript, import PDFs, or refresh on a schedule. Collection profiles can be exported; profile import is not included. A successful fetch records when Sift checked a page, not whether the upstream content is current.
 
-Replace the ID using the Connect tab. No collections are exposed by default. There are no management or URL-fetching MCP tools. See [MCP setup](docs/MCP.md) for Windows direct-node configuration, Codex TOML and diagnostics.
+The management interface binds to `127.0.0.1`. MCP uses local stdio, with an explicit collection allowlist. The website address and management URL are not remote MCP endpoints.
 
-## Develop and verify
-
-```sh
-corepack enable
-corepack prepare pnpm@11.19.0 --activate
-pnpm install --frozen-lockfile
-pnpm run build
-pnpm test
-node scripts/notices.mjs
-pnpm run release
-```
-
-If Corepack is unavailable, install the exact pnpm version through npm. `pnpm-workspace.yaml` allows esbuild's required install step. The lockfile is part of the source repository. Run `pnpm run build` after source changes, then `pnpm start`; the backend serves the built Vite interface. The release script packages the current built output; always build and test immediately beforehand.
-
-The source is split into storage, network transport, extraction, crawl orchestration, MCP, CLI, HTTP management and React feature components. Tests inject a fixture transport directly; there is **no production flag for private-network access or test fixtures**.
-
-## Documentation and release status
-
-- [Architecture and collection policy](docs/ARCHITECTURE.md)
-- [MCP connection guide](docs/MCP.md)
-- [Upgrade, backup and recovery](docs/OPERATIONS.md)
-- [Verification results and limitations](docs/VERIFICATION.md)
-- [Release procedure](docs/RELEASING.md)
-- [Changelog](CHANGELOG.md)
-- [Third-party notices](THIRD_PARTY_NOTICES.md)
-
-Ownership details and an open-source license have not been selected. `UNLICENSED` is package metadata indicating that this release does not grant an open-source license; it is not an invented ownership claim. Public source visibility does not itself grant an open-source license. This release should not be described as production ready solely because its build and tests pass.
+Source is publicly visible, but an open source license has not been selected. The package is marked `UNLICENSED`. See the [verification report](docs/VERIFICATION.md) for the limits of the tested first release.

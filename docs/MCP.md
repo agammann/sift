@@ -1,38 +1,46 @@
 # Connect Sift through MCP
 
-Sift uses the official `@modelcontextprotocol/sdk` **1.30.0**, pinned with its lockfile. API references were checked against the official [server](https://ts.sdk.modelcontextprotocol.io/server) and [client](https://ts.sdk.modelcontextprotocol.io/client) documentation. The SDK manages initialization, protocol validation, discovery and stdio framing.
+[Back to the README](../README.md)
 
-## Direct Node configuration
+Sift provides five read-only tools over **local stdio**. Your assistant starts the MCP process on the same computer as Sift's database. Neither the public website nor the browser's management address is an HTTP MCP endpoint.
 
-Use absolute paths when a client cannot find shell commands or cannot execute Windows `.cmd` shims:
+## Connect an existing collection
 
-```json
-{
-  "mcpServers": {
-    "sift": {
-      "command": "C:\\Program Files\\nodejs\\node.exe",
-      "args": [
-        "C:\\Tools\\sift\\package\\dist\\cli.js",
-        "mcp",
-        "--db", "C:\\Users\\YOUR_NAME\\AppData\\Local\\Sift\\sift.sqlite",
-        "--collections", "YOUR_COLLECTION_ID"
-      ]
-    }
-  }
-}
-```
+1. [Install and start Sift](GETTING_STARTED.md), create a collection, and refresh a source. Verify that Search finds a passage.
+2. Open that collection's **Connect** tab and choose **Test MCP connection**. Expect successful initialization and five tool names. This checks Sift itself, not your assistant's configuration.
+3. Choose **Copy configuration**. In Sift 0.1.1, it includes the absolute Node executable, installed CLI, database file, and selected collection ID. Extracted archives do not require a global sift command.
+4. Add the server to your local assistant's MCP settings, preserving any existing servers. Restart or reconnect the assistant's MCP server.
+5. Ask the assistant to use Sift's list_collections, then search_docs for a term you already found in Sift. Check that its answer contains the expected source URL. Use read_document for the complete retained revision.
 
-Those paths are placeholders. Use your installed Node executable, actual extracted package location and actual collection ID. On macOS/Linux use `/absolute/path/to/node` and `/absolute/path/to/package/dist/cli.js` if needed. Multiple explicit IDs can be comma separated in one argument.
+Keep the installation folder in place. If you move Sift, update Node, or select another database, copy a fresh configuration. Collection IDs are UUIDs shown in the generated configuration; names are not IDs. Multiple allowed IDs can be comma separated in the collections argument. No collections are exposed by default.
 
-For Codex, use equivalent TOML in its MCP configuration, as described in the [official OpenAI MCP configuration documentation](https://learn.chatgpt.com/docs/extend/mcp?surface=cli):
+## Codex configuration
+
+Codex stores MCP servers in config.toml. Its default user file is ~/.codex/config.toml; on Windows this is usually %USERPROFILE%\.codex\config.toml. See the [official OpenAI MCP configuration documentation](https://learn.chatgpt.com/docs/extend/mcp?surface=cli).
+
+Add the following table, using the **command and args values from Sift's Connect tab**. This is an example with placeholders, not a configuration to paste unchanged:
 
 ```toml
 [mcp_servers.sift]
-command = "node"
-args = ["/absolute/path/to/package/dist/cli.js", "mcp", "--collections", "YOUR_COLLECTION_ID"]
+command = 'C:\Program Files\nodejs\node.exe'
+args = ['C:\Tools\Sift\package\dist\cli.js', 'mcp', '--db', 'C:\Users\YOUR_NAME\AppData\Local\Sift\sift.sqlite', '--collections', 'YOUR_COLLECTION_ID']
 ```
 
-If using the default data directory, `--db` may be omitted. Connect diagnostics use the active workspace path and launch a real SDK client and child server. They verify initialization, discovery and collection listing. The automated integration test additionally performs actual `search_docs` and `read_document` wire calls.
+Single quoted TOML strings preserve Windows backslashes. JSON clients use the JSON copied from Connect, which escapes backslashes automatically. On macOS/Linux, use the absolute executable and file paths for that computer. The built in JSON configuration is not itself TOML.
+
+The management interface can be stopped after collection; MCP reads the persisted database independently. Refreshing sources still requires the management process. No OpenAI API key is needed by Sift; your assistant may have its own account requirements.
+
+## If the connection fails
+
+| Symptom | What to check |
+| --- | --- |
+| Executable not found or ENOENT | Copy configuration from Sift 0.1.1; check that Node and the CLI still exist at those paths. |
+| Missing database or collection | Confirm the database path matches Backup & restore, and copy the selected collection's actual ID. |
+| No search results | Refresh the source, try fewer query words, and confirm Search works in the browser. |
+| Built in test passes, assistant fails | The test uses Sift's own paths. Check the assistant's saved configuration, machine, and filesystem access. |
+| Terminal appears to wait after launching mcp | Stdio waits for a protocol client. Use the assistant or Test MCP connection instead of typing into it. |
+
+Sift uses the official MCP TypeScript SDK 1.30.0. API references: [server](https://ts.sdk.modelcontextprotocol.io/server) and [client](https://ts.sdk.modelcontextprotocol.io/client).
 
 ## Tool contract
 

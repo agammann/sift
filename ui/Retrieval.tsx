@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { api, date } from "./api.js";
-import { Button, Empty, Markdown } from "./components.js";
+import { Button, Empty, Markdown, HeadingLabel } from "./components.js";
 import type { Source } from "../src/model.js";
 export function Search({
   cid,
@@ -102,7 +102,14 @@ export function Search({
                   onClick={() => read(r.document_id, r.revision_id)}
                 >
                   {r.title}
-                  {r.heading && r.heading !== r.title ? ` / ${r.heading}` : ""}
+                  {r.heading && r.heading !== r.title ? (
+                    <>
+                      {" "}
+                      / <HeadingLabel text={r.heading} />
+                    </>
+                  ) : (
+                    ""
+                  )}
                 </button>
               </h3>
               <Markdown text={r.passage} />

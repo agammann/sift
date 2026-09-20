@@ -1,10 +1,11 @@
-import { mkdtemp, writeFile, rm } from "node:fs/promises";
+import { mkdtemp, writeFile, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { spawnSync, spawn } from "node:child_process";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 const root = await mkdtemp(join(tmpdir(), "sift-clean-install-"));
+const manifest = JSON.parse(await readFile("package.json", "utf8"));
 const packageManager = process.env.npm_execpath;
 if (!packageManager) throw new Error("Run with pnpm run verify:package");
 let server;
@@ -25,12 +26,12 @@ try {
   command([
     packageManager,
     "add",
-    resolve("artifacts/sift-local-0.1.0.tgz"),
+    resolve(`artifacts/${manifest.name}-${manifest.version}.tgz`),
     "--ignore-scripts",
   ]);
   const cli = join(root, "node_modules", "sift-local", "dist", "cli.js"),
     db = join(root, "data", "sift.sqlite");
-  if (!command([cli, "version"]).includes("0.1.0"))
+  if (command([cli, "version"]).trim() !== `Sift ${manifest.version}`)
     throw new Error("Wrong installed version");
   const health = JSON.parse(command([cli, "doctor", "--db", db]));
   if (!health.ok) throw new Error("Installed doctor failed");

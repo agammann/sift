@@ -1,5 +1,9 @@
 # Sift 0.1.0 implementation plan
 
+Historical build notes. For current installation instructions, use [Getting started](../GETTING_STARTED.md). For ongoing development, use [Development and contributions](../../CONTRIBUTING.md).
+
+The original build scope below predates the public companion website. The [website](https://sift-docs.alx21.chatgpt.site/) now provides information and downloads; Sift itself remains a local application.
+
 1. [complete] Persistent schema, safe transport, deterministic extraction, bounded jobs and refresh history.
 2. [complete] Ranked retrieval, explicit collection isolation, real stdio MCP integration.
 3. [complete] Local management UI, CLI, backup/restore and diagnostics.

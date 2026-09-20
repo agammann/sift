@@ -21,7 +21,9 @@ import { writerLock } from "../src/lock.js";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createElement } from "react";
 import http from "node:http";
-import { Markdown } from "../ui/components.js";
+import { Markdown, HeadingLabel } from "../ui/components.js";
+import { Connect } from "../ui/Settings.js";
+import { load } from "cheerio";
 
 function setup() {
   const dir = mkdtempSync(join(tmpdir(), "sift-test-")),
@@ -568,6 +570,69 @@ test("local HTTP origin/host/CSRF enforcement and complete management endpoints"
     t.close();
   }
 });
+test("copied Connect configuration launches without PATH and targets the selected workspace", async () => {
+  const t = setup();
+  const app = await startServer(t.store, {
+    port: 0,
+    uiDir: resolve("dist/ui"),
+    cli: resolve("dist/cli.js"),
+  });
+  const client = new Client({ name: "copied-config-check", version: "1.0.0" });
+  try {
+    await t.crawler.wait(t.crawler.start(t.source.id).id);
+    const session: any = await (
+      await fetch(app.origin + "/api/session")
+    ).json();
+    const html = renderToStaticMarkup(
+      createElement(Connect, {
+        cid: t.c.id,
+        launch: session.mcpLaunch,
+        act: async (fn: () => Promise<any>) => {
+          await fn();
+        },
+      }),
+    );
+    const config = JSON.parse(load(html)("pre").first().text()).mcpServers.sift;
+    await client.connect(
+      new StdioClientTransport({
+        ...config,
+        cwd: t.dir,
+        env: { PATH: "" },
+        stderr: "pipe",
+      }),
+    );
+    const result: any = await client.callTool({
+      name: "search_docs",
+      arguments: { collection_id: t.c.id, query: "retry delay" },
+    });
+    assert.equal(result.structuredContent.ok, true);
+    assert.ok(
+      result.structuredContent.data.results.some(
+        (r: any) => r.source_id === t.source.id,
+      ),
+    );
+  } finally {
+    await client.close();
+    await app.close();
+    t.close();
+  }
+});
+
+test("search heading labels render Markdown inline without interactive or unsafe elements", () => {
+  const html = renderToStaticMarkup(
+    createElement(
+      "button",
+      null,
+      createElement(HeadingLabel, {
+        text: '2\\. Using `python` [¶](https://docs.example.com/#heading "Link") ![image](https://example.com/x.png) <script>alert(1)</script>',
+      }),
+    ),
+  );
+  assert.match(html, /2\. Using/);
+  assert.match(html, /<code>python<\/code>/);
+  assert.doesNotMatch(html, /<a\b|<img\b|<script\b|<p\b|https:\/\/|\]\(/);
+});
+
 test("retrieval benchmark: expected passages and source labels (original fixtures)", async () => {
   const t = setup();
   try {

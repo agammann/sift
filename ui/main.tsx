@@ -13,6 +13,11 @@ function App() {
     [sources, setSources] = useState<any[]>([]),
     [tab, setTab] = useState("Sources"),
     [health, setHealth] = useState<any>(null),
+    [appVersion, setAppVersion] = useState(""),
+    [mcpLaunch, setMcpLaunch] = useState<{
+      command: string;
+      args: string[];
+    } | null>(null),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
     [ready, setReady] = useState(false),
@@ -45,6 +50,8 @@ function App() {
     void act(async () => {
       const s = await session();
       setHealth(s.health);
+      setAppVersion(s.version);
+      setMcpLaunch(s.mcpLaunch);
       await reload();
       setReady(true);
     });
@@ -127,7 +134,7 @@ function App() {
           </form>
         )}
         <div className="side-bottom">
-          <small>Local workspace · v0.1.0</small>
+          <small>Local workspace{appVersion ? ` · v${appVersion}` : ""}</small>
           <button
             className={tab === "Workspace" ? "selected" : ""}
             onClick={() => {
@@ -238,7 +245,7 @@ function App() {
                 read={(id, rid) => void act(() => read(id, rid))}
               />
             ) : (
-              <Connect cid={cid} act={act} />
+              <Connect cid={cid} act={act} launch={mcpLaunch!} />
             )}
             <footer>
               <span>
