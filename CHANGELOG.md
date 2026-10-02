@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2 — 2026-10-02
+
+Updated compatible `fast-uri` and `ip-address` dependencies used by the MCP SDK. The complete dependency audit now reports no known advisories. The release bundles the updated runtime.
+
+Added Windows, Linux and macOS automation for frozen installation, build, the existing test suite, dependency audit, archive creation and installation into a fresh project. Packaged verification exercises the UI service and actual stdio MCP without depending on the source checkout.
+
+The collection header and tabs now wrap on small screens, keeping Add source and Connect reachable at 320 pixels. Notice generation follows the installed dependency graph instead of including obsolete versions left in pnpm's store.
+
 ## 0.1.1 — 2026-09-19
 
 Fixed copied MCP configuration for extracted installations, Windows command lookup, and custom workspaces. Connect now includes the absolute Node executable, Sift CLI, database path, and selected collection. A regression check launches the exact rendered configuration with an empty PATH and reads fixture evidence from the intended workspace.

@@ -2951,7 +2951,7 @@ SOFTWARE.
 
 
 
-## fast-uri@3.1.7
+## fast-uri@3.1.8
 
 Declared license: "BSD-3-Clause"
 
@@ -3582,7 +3582,7 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 
-## ip-address@10.7.0
+## ip-address@10.7.2
 
 Declared license: "MIT"
 
