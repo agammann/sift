@@ -16,7 +16,7 @@ Sift 0.1.2 is a local application for one user. Your collections live in a SQLit
 
 ## Quick start
 
-Requires **Node.js 24.15 or later within the Node 24 release line**. Select Node 24 on the [official download page](https://nodejs.org/en/download), then open a new terminal and check `node --version`. Node 22 and Node 25 or later are not supported by this release. Windows has been tested; macOS and Linux execution has not yet been verified.
+Requires **Node.js 24.15 or later within the Node 24 release line**. Select Node 24 on the [official download page](https://nodejs.org/en/download), then open a new terminal and check `node --version`. Node 22 and Node 25 or later are not supported by this release. Clean package installation, CLI, HTTP interface and stdio MCP checks passed on Windows, Ubuntu 22.04 and macOS with Node 24.19.0. The browser walkthrough ran on Windows; see the [verification record](docs/verification-2026-10-02.md) for scope.
 
 1. Download the [Sift archive](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.2.tgz) and [SHA256 checksum](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.2.tgz.sha256).
 2. Put the archive in a new folder you will keep, and open a terminal in that folder. See the [installation guide](docs/GETTING_STARTED.md) for checksum commands and Windows instructions.

@@ -20,6 +20,8 @@ The crawl used the ordinary production transport, including DNS/private-address 
 
 A separate SDK client launched the configuration actually rendered by Connect, with an empty PATH. All five tools returned successful results: `list_collections`, `get_collection_profile`, `search_docs`, `read_document` and `list_changes`. Document pagination returned different successive content pages. A collection outside the explicit allowlist returned `forbidden_collection`.
 
+Codex app-server 0.159.2 then launched that extracted installation through its native stdio MCP configuration, using an ephemeral runtime with the management server stopped. All five tools passed through Codex's `mcpServer/tool/call` API. Search returned the retained Python tutorial and original source URL. Successive document pages differed, and the unexposed collection returned `forbidden_collection`. This exercises the actual Codex host without changing the user's saved server configuration; no model conversation or inference request was run.
+
 The interface created a verified online backup, added a temporary collection, and restored the backup while the MCP reader remained connected. The added collection disappeared and the original retained revision was still retrievable. After stopping the server, CLI doctor passed. Restarting the same extracted installation preserved the restored collections and revision IDs.
 
 ## Corrections and automated checks
@@ -30,6 +32,6 @@ The initial complete dependency audit reported three moderate advisories in `fas
 
 Production build and TypeScript checks passed. All 18 existing tests passed, including actual stdio MCP, collection isolation, refresh/recovery, safe rendering and network boundaries. The fixture retrieval benchmark returned 5/5 expected passages in the top three; this is a small deterministic fixture score.
 
-The [workflow](https://github.com/agammann/sift/actions/workflows/check.yml) runs frozen installation, notice generation, build, tests, complete dependency audit, release creation and clean package verification on Windows, Ubuntu 22.04 and macOS. Consult the workflow for its current outcomes; adding a job alone does not establish a platform result.
+The [verified workflow run](https://github.com/agammann/sift/actions/runs/36968089195) passed frozen installation, notice generation, build, all 18 tests, complete dependency audit, release creation and clean package verification on Windows, Ubuntu 22.04 and macOS with Node 24.19.0. Each platform installed its archive into a fresh temporary project and verified version, persistent database, doctor, the packaged HTTP interface, a management mutation and actual stdio MCP initialization/discovery/listing. The complete rendered browser walkthrough above ran on Windows.
 
-Third-party assistant UI enrollment, independent participant onboarding, large-corpus load, disk exhaustion and power-loss recovery remain unverified. Sift supports public server-rendered HTML only. Its public website is a download/information page, and its management address is not an HTTP MCP endpoint.
+Assistant UI enrollment and model use of retrieved material, independent participant onboarding, large-corpus load, disk exhaustion and power-loss recovery remain unverified. Sift supports public server-rendered HTML only. Its public website is a download/information page, and its management address is not an HTTP MCP endpoint.
