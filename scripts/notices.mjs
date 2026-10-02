@@ -1,44 +1,56 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { spawnSync } from "node:child_process";
 const packages = new Map();
 const retiredUnicodeUrl = "http://www.unicode.org/utility/trac/browser/";
 const unicodeSourceLink = `[${retiredUnicodeUrl}](https://github.com/unicode-org/unicodetools)`;
-const linkNote = "The retired Unicode source browser link keeps its original visible text and points to the current Unicode tools repository.";
-for (const item of await readdir("node_modules/.pnpm")) {
-  const root = join("node_modules/.pnpm", item, "node_modules");
-  let entries;
+const linkNote =
+  "The retired Unicode source browser link keeps its original visible text and points to the current Unicode tools repository.";
+const packageManager = process.env.npm_execpath;
+if (!packageManager) throw new Error("Run with pnpm run notices");
+const listed = spawnSync(
+  process.execPath,
+  [packageManager, "list", "--json", "--depth", "Infinity"],
+  { encoding: "utf8", maxBuffer: 20 * 1024 * 1024 },
+);
+if (listed.status !== 0) throw new Error(listed.stderr || listed.stdout);
+const paths = new Set();
+function visit(entry) {
+  if (entry.path) paths.add(entry.path);
+  for (const kind of [
+    "dependencies",
+    "devDependencies",
+    "optionalDependencies",
+  ])
+    for (const dependency of Object.values(entry[kind] || {}))
+      visit(dependency);
+}
+for (const root of JSON.parse(listed.stdout))
+  for (const kind of [
+    "dependencies",
+    "devDependencies",
+    "optionalDependencies",
+  ])
+    for (const dependency of Object.values(root[kind] || {})) visit(dependency);
+// Follow the installed dependency graph; pnpm's store can retain old versions.
+for (const path of paths) {
   try {
-    entries = await readdir(root, { withFileTypes: true });
-  } catch {
-    continue;
-  }
-  const dirs = [];
-  for (const e of entries) {
-    if (!e.isDirectory()) continue;
-    if (e.name.startsWith("@")) {
-      for (const s of await readdir(join(root, e.name)))
-        dirs.push(join(root, e.name, s));
-    } else dirs.push(join(root, e.name));
-  }
-  for (const path of dirs) {
-    try {
-      const p = JSON.parse(await readFile(join(path, "package.json"), "utf8"));
-      const key = `${p.name}@${p.version}`;
-      if (packages.has(key)) continue;
-      let licenses = "";
-      for (const f of await readdir(path))
-        if (/^(license|licence|copying|notice)(\.|$)/i.test(f)) {
-          try {
-            licenses += `\n${f}\n\n${await readFile(join(path, f), "utf8")}\n`;
-          } catch {}
-        }
-      licenses = licenses.replaceAll(retiredUnicodeUrl, unicodeSourceLink);
-      packages.set(
-        key,
-        `## ${key}\n\nDeclared license: ${JSON.stringify(p.license || p.licenses || "Not declared")}\n\n${licenses || "No root license file found; consult the upstream package for terms."}`,
-      );
-    } catch {}
-  }
+    const p = JSON.parse(await readFile(join(path, "package.json"), "utf8"));
+    const key = `${p.name}@${p.version}`;
+    if (packages.has(key)) continue;
+    let licenses = "";
+    for (const f of await readdir(path))
+      if (/^(license|licence|copying|notice)(\.|$)/i.test(f)) {
+        try {
+          licenses += `\n${f}\n\n${await readFile(join(path, f), "utf8")}\n`;
+        } catch {}
+      }
+    licenses = licenses.replaceAll(retiredUnicodeUrl, unicodeSourceLink);
+    packages.set(
+      key,
+      `## ${key}\n\nDeclared license: ${JSON.stringify(p.license || p.licenses || "Not declared")}\n\n${licenses || "No root license file found; consult the upstream package for terms."}`,
+    );
+  } catch {}
 }
 await writeFile(
   "THIRD_PARTY_NOTICES.md",

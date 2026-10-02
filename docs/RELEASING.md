@@ -5,7 +5,7 @@ Use a clean source checkout, Node 24.15 or later within Node 24, and pnpm 11.19.
 1. Update the package version and the version constant in `src/model.ts`; update the changelog and current download links in README and Getting started. The UI displays the backend's version. Keep historical verification reports and old artifact checksums unchanged.
 2. Install with `pnpm install --frozen-lockfile`.
 3. Run `pnpm run build` and `pnpm test`.
-4. Run `node scripts/notices.mjs` to collect license declarations/text from the installed exact dependency tree; review notices.
+4. Run `pnpm run notices` to collect license declarations/text from the installed exact dependency graph; review notices. Old package versions left in pnpm's store are excluded.
 5. Run `pnpm run release`. This creates `artifacts/sift-local-VERSION.tgz` and a SHA-256 file. The backend, UI, migration, docs, examples and notices are included. Runtime npm dependencies/install scripts are omitted because the runtime is bundled.
 6. Run `pnpm run verify:package`. It installs the archive for the current package version in a fresh temporary project with scripts disabled, then checks version, doctor, the interface, a management mutation, and a real stdio MCP connection. Also extract the archive into a fresh folder and try the README path. Verify the checksum and archive contents before distribution.
 7. Update the verification report with actual platform and test evidence. Review `git diff`, scan tracked files for data/secrets, commit the lockfile, and tag the verified commit.

@@ -8,7 +8,7 @@ Sift provides five read-only tools over **local stdio**. Your assistant starts t
 
 1. [Install and start Sift](GETTING_STARTED.md), create a collection, and refresh a source. Verify that Search finds a passage.
 2. Open that collection's **Connect** tab and choose **Test MCP connection**. Expect successful initialization and five tool names. This checks Sift itself, not your assistant's configuration.
-3. Choose **Copy configuration**. In Sift 0.1.1, it includes the absolute Node executable, installed CLI, database file, and selected collection ID. Extracted archives do not require a global sift command.
+3. Choose **Copy configuration**. It includes the absolute Node executable, installed CLI, database file, and selected collection ID. Extracted archives do not require a global sift command.
 4. Add the server to your local assistant's MCP settings, preserving any existing servers. Restart or reconnect the assistant's MCP server.
 5. Ask the assistant to use Sift's list_collections, then search_docs for a term you already found in Sift. Check that its answer contains the expected source URL. Use read_document for the complete retained revision.
 
@@ -30,11 +30,13 @@ Single quoted TOML strings preserve Windows backslashes. JSON clients use the JS
 
 The management interface can be stopped after collection; MCP reads the persisted database independently. Refreshing sources still requires the management process. No OpenAI API key is needed by Sift; your assistant may have its own account requirements.
 
+On October 2, 2026, Codex app-server 0.159.2 on Windows launched the extracted 0.1.2 archive and successfully called all five tools. Search returned the collected Python tutorial with its source URL; document pagination and collection isolation also passed. This verifies the Codex host's MCP connection and tool execution. It does not establish another assistant's setup or how a model uses retrieved material. See the [verification record](verification-2026-10-02.md).
+
 ## If the connection fails
 
 | Symptom | What to check |
 | --- | --- |
-| Executable not found or ENOENT | Copy configuration from Sift 0.1.1; check that Node and the CLI still exist at those paths. |
+| Executable not found or ENOENT | Copy configuration from the installed Sift app; check that Node and the CLI still exist at those paths. |
 | Missing database or collection | Confirm the database path matches Backup & restore, and copy the selected collection's actual ID. |
 | No search results | Refresh the source, try fewer query words, and confirm Search works in the browser. |
 | Built in test passes, assistant fails | The test uses Sift's own paths. Check the assistant's saved configuration, machine, and filesystem access. |

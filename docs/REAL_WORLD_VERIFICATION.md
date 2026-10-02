@@ -1,5 +1,7 @@
 # Real-world verification: Sift 0.1.1
 
+This is the September 19 record. See [October 2 verification](verification-2026-10-02.md) for the current 0.1.2 packaged workflow, mobile correction and dependency checks.
+
 Checked on September 19, 2026, using Windows, Node 24.19.0, and pnpm 11.19.0. These are operator-run acceptance checks against live public documentation, not a study with recruited users or a claim of universal site compatibility.
 
 ## Starting from the public download

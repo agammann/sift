@@ -12,22 +12,22 @@ Install **Node.js 24.15 or later within Node 24** from the [official Node.js dow
 node --version
 ```
 
-Expect `v24.15.0` or a newer `v24.x.x`. Other major versions are not supported by Sift 0.1.1. Windows with Node 24.19.0 has been tested. The macOS and Linux instructions have not been executed on those platforms.
+Expect `v24.15.0` or a newer `v24.x.x`. Other major versions are not supported by Sift 0.1.2. With Node 24.19.0, clean package installation, CLI, HTTP interface and stdio MCP checks passed on Windows, Ubuntu 22.04 and macOS. The complete browser walkthrough ran on Windows. See the [verification record](verification-2026-10-02.md) for exact scope; the manual checksum commands below have not been executed on macOS/Linux.
 
 ## Download and verify
 
 Download both files into the same new folder, such as a folder named `Sift` in your Documents directory:
 
-1. [sift-local-0.1.1.tgz](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.1.tgz)
-2. [sift-local-0.1.1.tgz.sha256](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.1.tgz.sha256)
+1. [sift-local-0.1.2.tgz](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.2.tgz)
+2. [sift-local-0.1.2.tgz.sha256](https://sift-docs.alx21.chatgpt.site/downloads/sift-local-0.1.2.tgz.sha256)
 
 Keep their original filenames. Open a terminal in that folder. On Windows, open the folder in File Explorer, right click an empty area, and choose **Open in Terminal**. Use a fresh folder so extraction will not overwrite another application named `package`.
 
 In **PowerShell**, compare the download with its checksum:
 
 ```powershell
-$siftExpectedHash = ((Get-Content .\sift-local-0.1.1.tgz.sha256 -Raw).Trim() -split '\s+')[0]
-$siftActualHash = (Get-FileHash .\sift-local-0.1.1.tgz -Algorithm SHA256).Hash
+$siftExpectedHash = ((Get-Content .\sift-local-0.1.2.tgz.sha256 -Raw).Trim() -split '\s+')[0]
+$siftActualHash = (Get-FileHash .\sift-local-0.1.2.tgz -Algorithm SHA256).Hash
 if ($siftActualHash -ne $siftExpectedHash) { throw 'Checksum mismatch. Download the archive again.' }
 'Checksum matches.'
 ```
@@ -35,13 +35,13 @@ if ($siftActualHash -ne $siftExpectedHash) { throw 'Checksum mismatch. Download 
 On **macOS**, use:
 
 ```sh
-shasum -a 256 -c sift-local-0.1.1.tgz.sha256
+shasum -a 256 -c sift-local-0.1.2.tgz.sha256
 ```
 
 On **Linux**, use:
 
 ```sh
-sha256sum -c sift-local-0.1.1.tgz.sha256
+sha256sum -c sift-local-0.1.2.tgz.sha256
 ```
 
 Expect `Checksum matches.` in PowerShell, or a result ending in `OK` on macOS/Linux. A mismatch means the file does not match the published checksum; do not continue with that copy.
@@ -51,7 +51,7 @@ Expect `Checksum matches.` in PowerShell, or a result ending in `OK` on macOS/Li
 From the same folder:
 
 ```sh
-tar -xzf sift-local-0.1.1.tgz
+tar -xzf sift-local-0.1.2.tgz
 node package/dist/cli.js version
 node package/dist/cli.js doctor
 node package/dist/cli.js start
@@ -61,7 +61,7 @@ The archive creates a `package` folder. Keep it where you intend to run Sift, es
 
 | Step | Expected result |
 | --- | --- |
-| `version` | `Sift 0.1.1` |
+| `version` | `Sift 0.1.2` |
 | `doctor` | JSON containing `"ok": true`, `"integrity": "ok"`, and the database path |
 | `start` | A message containing `http://127.0.0.1:4587` and the data path |
 
@@ -108,7 +108,7 @@ Version labels describe what you know about the source; Sift does not infer vers
 If Node's npm command is available, you can install the downloaded archive globally instead of using its extracted CLI:
 
 ```sh
-npm install --global ./sift-local-0.1.1.tgz
+npm install --global ./sift-local-0.1.2.tgz
 sift version
 sift doctor
 sift start

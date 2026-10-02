@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
 
-export const VERSION = "0.1.1";
+export const VERSION = "0.1.2";
 export const id = () => randomUUID();
 export const now = () => new Date().toISOString();
 export class SiftError extends Error {
