@@ -1,13 +1,14 @@
 name: Sift checks
-
 on:
   pull_request:
   push:
     branches: [main]
-
+  workflow_dispatch:
 permissions:
   contents: read
-
+concurrency:
+  group: sift-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   verify:
     strategy:
@@ -17,8 +18,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24.19.0
       - run: npm install --global pnpm@11.19.0
@@ -29,3 +30,58 @@ jobs:
       - run: pnpm audit --audit-level=low
       - run: pnpm run release
       - run: pnpm run verify:package
+      - name: Keep the tested Linux release archive
+        if: matrix.os == 'ubuntu-22.04'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sift-release
+          path: |
+            artifacts/sift-local-*.tgz
+            artifacts/sift-local-*.tgz.sha256
+            artifacts/SHA256SUMS
+          if-no-files-found: error
+  package_acceptance:
+    name: Released archive on ${{ matrix.os }}
+    needs: verify
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-22.04, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.19.0
+      - run: npm install --global pnpm@11.19.0
+      - run: pnpm install --frozen-lockfile
+      - name: Download the exact Linux archive from this checked run
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: sift-release
+          path: artifacts
+      - run: pnpm run verify:package
+  publish:
+    name: Publish verified release
+    needs: [verify, package_acceptance]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: sift-release
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Read the same accepted archive
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: sift-release
+          path: release-artifacts
+      - name: Publish complete archive and checksum assets
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const publish = require('./scripts/publish-release.cjs');
+            await publish({ github, context, core });

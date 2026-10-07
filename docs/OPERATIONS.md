@@ -12,7 +12,7 @@
 
 Run `sift doctor` while the management process is stopped to see the exact path and database health. For an extracted archive, replace `sift` in commands throughout this guide with `node package/dist/cli.js`, running from the extraction folder.
 
-Set `SIFT_DATA_DIR` to a directory, or pass `--db ABSOLUTE_DATABASE_FILE` to use a custom workspace. Use the same database for management and MCP. In 0.1.1, **Connect → Copy configuration** includes the running executable and database paths automatically.
+Set `SIFT_DATA_DIR` to a directory, or pass `--db ABSOLUTE_DATABASE_FILE` to use a custom workspace. Use the same database for management and MCP. In 1.0, **Connect → Copy configuration** includes the running executable and database paths automatically.
 
 ## Start and stop
 
@@ -45,7 +45,7 @@ Only restore trusted Sift backups you control. SQLite file validation is not a s
 
 Current and previous successful revisions are retained by default, configurable per source up to 20. A failed refresh does not consume a successful revision slot. Confirmed 404/410 documents leave active search but keep retained revisions. An expired revision ID returns an explicit missing-content error. Change events retain their revision IDs even if the content later expires.
 
-Source/job/outcome/change records remain until their source or collection is deleted. There is no automatic time-based pruning in 0.1.0; monitor disk usage for long-lived high-refresh workspaces. UI deletion prompts identify the affected scope and permanently delete its source content/history. Back up first if recovery is needed. Whole-workspace restore also has explicit confirmation and a recovery copy.
+Source/job/outcome/change records remain until their source or collection is deleted. There is no automatic time-based pruning in 1.0; monitor disk usage for long-lived high-refresh workspaces. UI deletion prompts identify the affected scope and permanently delete its source content/history. Back up first if recovery is needed. Whole-workspace restore also has explicit confirmation and a recovery copy.
 
 ## Interrupted jobs
 

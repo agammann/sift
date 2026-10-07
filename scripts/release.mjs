@@ -1,6 +1,6 @@
 import { mkdtemp, cp, readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join, resolve, dirname, basename } from "node:path";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 const p = JSON.parse(await readFile("package.json", "utf8"));
@@ -17,6 +17,7 @@ try {
     "examples",
     "CHANGELOG.md",
     "THIRD_PARTY_NOTICES.md",
+    "LICENSE",
   ])
     await cp(file, join(root, file), { recursive: true });
   // Bundled runtime has zero npm dependencies and requires no install scripts.
@@ -51,8 +52,17 @@ try {
     `${artifact}.sha256`,
     `${hash}  ${p.name}-${p.version}.tgz\n`,
   );
+  await writeFile(
+    resolve("artifacts", "SHA256SUMS"),
+    `${hash}  ${p.name}-${p.version}.tgz\n`,
+  );
   console.log(artifact);
   console.log(`SHA-256 ${hash}`);
 } finally {
+  if (
+    dirname(resolve(stage)) !== resolve(tmpdir()) ||
+    !basename(stage).startsWith("sift-release-")
+  )
+    throw new Error("Unexpected temporary release path; cleanup stopped");
   await rm(stage, { recursive: true, force: true });
 }
