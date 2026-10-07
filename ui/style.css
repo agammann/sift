@@ -613,7 +613,9 @@ footer {
     flex-wrap: wrap;
   }
   footer {
-    display: block;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
   .row-title {
     display: block;

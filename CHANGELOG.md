@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.0
+
+Defined the bounded local documentation/MCP contract, supported-source matrix and backup-first upgrade from 0.1.2. Sift's own source and bundled release are now MIT licensed; third-party notices retain their original licenses.
+
+Updated MCP SDK to 1.31.0 and patched the compatible proxy-addr and source-map-js dependencies. Collection behavior, SQLite schema, extraction, search and five read-only MCP tool names remain unchanged.
+
+Separated the mobile collection-deletion action from the footer explanation so the destructive control remains clear.
+
+Added an immutable GitHub release archive with SHA256 sidecars. Publication requires source checks and fresh package installation on Windows, Linux and macOS. All three platforms check the exact Linux-built archive before it is published. The archive includes the UI, bundled backend, documentation, migrations, examples and license; it needs Node 24 and no runtime npm installation.
+
 ## 0.1.2 — 2026-10-02
 
 Updated compatible `fast-uri` and `ip-address` dependencies used by the MCP SDK. The complete dependency audit now reports no known advisories. The release bundles the updated runtime.

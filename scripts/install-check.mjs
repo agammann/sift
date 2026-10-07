@@ -1,9 +1,10 @@
 import { mkdtemp, writeFile, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join, resolve, dirname, basename } from "node:path";
 import { spawnSync, spawn } from "node:child_process";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { createHash } from "node:crypto";
 const root = await mkdtemp(join(tmpdir(), "sift-clean-install-"));
 const manifest = JSON.parse(await readFile("package.json", "utf8"));
 const packageManager = process.env.npm_execpath;
@@ -19,6 +20,15 @@ function command(args) {
   return r.stdout;
 }
 try {
+  const archive = resolve(`artifacts/${manifest.name}-${manifest.version}.tgz`);
+  const expectedChecksum = `${createHash("sha256")
+    .update(await readFile(archive))
+    .digest("hex")}  ${manifest.name}-${manifest.version}.tgz\n`;
+  if (
+    (await readFile(archive + ".sha256", "utf8")) !== expectedChecksum ||
+    (await readFile("artifacts/SHA256SUMS", "utf8")) !== expectedChecksum
+  )
+    throw new Error("Release archive checksum does not match its sidecars");
   await writeFile(
     join(root, "package.json"),
     '{"name":"sift-install-verification","private":true}',
@@ -31,6 +41,27 @@ try {
   ]);
   const cli = join(root, "node_modules", "sift-local", "dist", "cli.js"),
     db = join(root, "data", "sift.sqlite");
+  const installed = JSON.parse(
+    await readFile(
+      join(root, "node_modules", "sift-local", "package.json"),
+      "utf8",
+    ),
+  );
+  if (
+    installed.version !== manifest.version ||
+    installed.license !== "MIT" ||
+    Object.keys(installed.dependencies || {}).length ||
+    Object.keys(installed.scripts || {}).length ||
+    !(
+      await readFile(
+        join(root, "node_modules", "sift-local", "LICENSE"),
+        "utf8",
+      )
+    ).includes("MIT License")
+  )
+    throw new Error(
+      "Installed release metadata, license or bundled runtime contract differs",
+    );
   if (command([cli, "version"]).trim() !== `Sift ${manifest.version}`)
     throw new Error("Wrong installed version");
   const health = JSON.parse(command([cli, "doctor", "--db", db]));
@@ -109,6 +140,11 @@ try {
     server.kill();
     await exited;
   }
+  if (
+    dirname(resolve(root)) !== resolve(tmpdir()) ||
+    !basename(root).startsWith("sift-clean-install-")
+  )
+    throw new Error("Unexpected temporary consumer path; cleanup stopped");
   await rm(root, {
     recursive: true,
     force: true,

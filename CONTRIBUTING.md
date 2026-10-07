@@ -58,4 +58,4 @@ For an installable artifact, follow the complete [release procedure](docs/RELEAS
 
 Use [GitHub Issues](https://github.com/agammann/sift/issues) for reproducible bugs or focused feature proposals. Include the Sift version, Node version, operating system, expected result, actual result, and minimal steps. Remove credentials, private URLs, database paths containing personal information, and document content before sharing logs.
 
-Discuss substantial changes before implementing them. Keep proposed patches focused and describe how they were verified. Public source visibility does not grant an open source license; the project remains `UNLICENSED`, and licensing decisions belong to the repository owner.
+Discuss substantial changes before implementing them. Keep proposed patches focused and describe how they were verified. Sift's own source is available under the [MIT License](LICENSE). Bundled third-party dependencies retain their original licenses in [Third party notices](THIRD_PARTY_NOTICES.md).

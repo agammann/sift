@@ -1,0 +1,13 @@
+# Sift 1.0 verification scope
+
+The Windows candidate was checked with Node 24.19.0 and pnpm 11.19.0 on October 6, 2026. Fresh frozen installation, TypeScript/backend/UI build and all 18 existing tests passed after updating MCP SDK to 1.31.0 and the compatible proxy-addr/source-map-js patches. The complete dependency audit reported zero known advisories at that time.
+
+The existing tests exercise deterministic HTML collection and independently expected retrieval passages, changed/unchanged/failed/unavailable refreshes, retained revisions, backup/restore and migration rollback, writer exclusion and interruption recovery, real stdio MCP discovery/retrieval with an explicit collection allowlist, and copied Connect configuration launched without PATH. The retrieval fixture checks five expected passages in the top three; this is a fixture result rather than a comparative model-quality claim.
+
+Release automation requires fresh source checks on Windows, Ubuntu 22.04 and macOS, then installs the exact Linux-produced archive on all three platforms. It checks matching SHA256 sidecars, version/MIT metadata, included license, zero runtime dependencies/install scripts, doctor, management interface and mutation, and actual stdio MCP. These are required publication gates; see the release’s Actions run for their exact commit and outcome.
+
+The local extracted-archive walkthrough used Chromium 153.0.8010.12 on Windows at 1280×800 and 390×844. Create collection, add/refresh a one-page Example Domain source, search, inspect the retained revision, Connect diagnostics, reload and mobile layout passed without console or page errors. A separate stdio client launched the exact displayed executable/database configuration and called all five tools. Retrieved paragraph text matched an independent fetch of the public HTML; the no-match result was explicit. Example Domain is only a one-time onboarding smoke example, not a service to monitor or a promise about future network availability.
+
+The mobile walkthrough exposed the destructive footer action running directly into the explanatory text. The mobile footer now stacks those elements with spacing; the same rendered check was repeated after the change. A separate Codex assistant-host call was recorded for 0.1.2 on October 2 and remains dated historical evidence; it has not been repeated for every assistant host against 1.0. The 1.0 integration promise is the documented local stdio contract, not universal host compatibility.
+
+Supported sources and remaining limitations are in the [v1 contract](V1.md). No capacity, hostile-database sandbox or JavaScript/PDF/authenticated-page support is claimed. Dependency audit results are time-bound; ongoing maintenance follows the initial release.

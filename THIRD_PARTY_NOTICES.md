@@ -76,7 +76,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-## @modelcontextprotocol/sdk@1.30.0
+## @modelcontextprotocol/sdk@1.31.0
 
 Declared license: "MIT"
 
@@ -6960,7 +6960,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-## proxy-addr@2.0.7
+## proxy-addr@2.0.8
 
 Declared license: "MIT"
 
@@ -7760,7 +7760,7 @@ SOFTWARE.
 
 
 
-## source-map-js@1.2.1
+## source-map-js@1.2.2
 
 Declared license: "BSD-3-Clause"
 

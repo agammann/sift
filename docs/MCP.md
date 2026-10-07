@@ -42,7 +42,7 @@ On October 2, 2026, Codex app-server 0.159.2 on Windows launched the extracted 0
 | Built in test passes, assistant fails | The test uses Sift's own paths. Check the assistant's saved configuration, machine, and filesystem access. |
 | Terminal appears to wait after launching mcp | Stdio waits for a protocol client. Use the assistant or Test MCP connection instead of typing into it. |
 
-Sift uses the official MCP TypeScript SDK 1.30.0. API references: [server](https://ts.sdk.modelcontextprotocol.io/server) and [client](https://ts.sdk.modelcontextprotocol.io/client).
+Sift 1.0 uses the official MCP TypeScript SDK 1.31.0. API references: [server](https://ts.sdk.modelcontextprotocol.io/server) and [client](https://ts.sdk.modelcontextprotocol.io/client).
 
 ## Tool contract
 
