@@ -33,7 +33,7 @@
     "verify:package": "node scripts/install-check.mjs"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.31.0",
+    "@modelcontextprotocol/sdk": "1.32.0",
     "cheerio": "1.2.0",
     "ipaddr.js": "2.5.0",
     "react": "19.2.8",
