@@ -10,7 +10,7 @@ Declared license: "MIT"
 
 No root license file found; consult the upstream package for terms.
 
-## @hono/node-server@2.1.1
+## @hono/node-server@2.1.6
 
 Declared license: "MIT"
 
@@ -76,7 +76,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-## @modelcontextprotocol/sdk@1.31.0
+## @modelcontextprotocol/sdk@1.32.2
 
 Declared license: "MIT"
 
@@ -1206,7 +1206,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-## body-parser@2.3.0
+## body-parser@2.4.0
 
 Declared license: "MIT"
 
@@ -2951,7 +2951,7 @@ SOFTWARE.
 
 
 
-## fast-uri@3.1.8
+## fast-uri@3.1.9
 
 Declared license: "BSD-3-Clause"
 
@@ -3353,7 +3353,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-## hono@4.13.7
+## hono@4.13.16
 
 Declared license: "MIT"
 
@@ -3582,7 +3582,7 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 
-## ip-address@10.7.2
+## ip-address@10.7.6
 
 Declared license: "MIT"
 
@@ -6992,7 +6992,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-## qs@6.16.0
+## qs@6.17.1
 
 Declared license: "BSD-3-Clause"
 
@@ -8745,7 +8745,7 @@ SOFTWARE.
 
 
 
-## undici@7.29.1
+## undici@7.30.1
 
 Declared license: "MIT"
 
@@ -9094,7 +9094,7 @@ THE SOFTWARE.
 
 
 
-## vite@8.2.2
+## vite@8.2.4
 
 Declared license: "MIT"
 
@@ -11534,7 +11534,7 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
-## zod@4.5.4
+## zod@4.6.7
 
 Declared license: "MIT"
 
