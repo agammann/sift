@@ -36,14 +36,14 @@ module.exports = async ({ github, context, core }) => {
   const matching = releases.filter((release) => release.tag_name === tag);
   if (matching.length > 1) throw new Error("Multiple releases use " + tag);
   let release = matching[0];
-  if (!release && releases.some((item) => item.draft && /^untagged-/.test(item.tag_name) && (item.target_commitish === context.sha || item.name === "Sift " + version))) {
-    throw new Error("An untagged draft targets this commit; resolve it before publishing.");
-  }
   if (release && !release.draft) {
     core.info(
       "Release " + tag + " is already published; leaving it unchanged.",
     );
     return;
+  }
+  if (releases.some((item) => item.draft && /^untagged-/.test(item.tag_name) && (item.target_commitish === context.sha || item.name === "Sift " + version))) {
+    throw new Error("An untagged draft targets this commit or version; resolve it before publishing.");
   }
   if (
     release &&
@@ -300,5 +300,11 @@ module.exports = async ({ github, context, core }) => {
     draft: false,
     make_latest: "true",
   });
+  const published = (await github.rest.repos.getRelease({ owner, repo, release_id: release.id })).data;
+  if (published.draft || published.prerelease || published.tag_name !== tag || published.target_commitish !== context.sha) {
+    throw new Error("Published release identity verification failed.");
+  }
+  await requireCurrentHead();
+  if ((await requireCorrectTag()) !== context.sha) throw new Error("Release tag changed after publication.");
   core.info("Published Sift " + version + " at " + context.sha);
 };
