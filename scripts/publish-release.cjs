@@ -36,6 +36,9 @@ module.exports = async ({ github, context, core }) => {
   const matching = releases.filter((release) => release.tag_name === tag);
   if (matching.length > 1) throw new Error("Multiple releases use " + tag);
   let release = matching[0];
+  if (!release && releases.some((item) => item.draft && /^untagged-/.test(item.tag_name) && (item.target_commitish === context.sha || item.name === "Sift " + version))) {
+    throw new Error("An untagged draft targets this commit; resolve it before publishing.");
+  }
   if (release && !release.draft) {
     core.info(
       "Release " + tag + " is already published; leaving it unchanged.",
@@ -143,8 +146,21 @@ module.exports = async ({ github, context, core }) => {
     "/blob/" +
     tag +
     "/README.md).";
+  // Establish and verify the exact tag before creating or updating a draft.
+  // Drafts created before their tags exist may be represented as untagged by GitHub.
+  await requireCurrentHead();
+  if ((await requireCorrectTag()) === null) {
+    await github.rest.git.createRef({ owner, repo, ref: "refs/tags/" + tag, sha: context.sha });
+  }
+  let verifiedTag = null;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    verifiedTag = await requireCorrectTag();
+    if (verifiedTag === context.sha) break;
+    if (attempt < 4) await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+  if (verifiedTag !== context.sha) throw new Error("Release tag is missing before draft creation.");
+  await requireCurrentHead();
   if (!release) {
-    await requireCurrentHead();
     release = (
       await github.rest.repos.createRelease({
         owner,
@@ -163,6 +179,7 @@ module.exports = async ({ github, context, core }) => {
         owner,
         repo,
         release_id: release.id,
+        tag_name: tag,
         name: "Sift " + version,
         body,
         draft: true,
@@ -170,6 +187,12 @@ module.exports = async ({ github, context, core }) => {
       })
     ).data;
   }
+  const savedDraft = (await github.rest.repos.getRelease({ owner, repo, release_id: release.id })).data;
+  if (!savedDraft.draft || savedDraft.prerelease || savedDraft.tag_name !== tag || savedDraft.target_commitish !== context.sha) {
+    throw new Error("Draft identity changed before asset upload; publication stopped.");
+  }
+  await requireCurrentHead();
+  if ((await requireCorrectTag()) !== context.sha) throw new Error("Release tag changed before asset upload.");
   const existing = await github.paginate(github.rest.repos.listReleaseAssets, {
     owner,
     repo,
@@ -263,16 +286,8 @@ module.exports = async ({ github, context, core }) => {
   ) {
     throw new Error("Draft changed during upload; publication stopped.");
   }
-  // Create the tag at the checked commit explicitly; target_commitish cannot move an existing tag.
+  // Recheck the immutable tag and current main immediately before publication.
   await requireCurrentHead();
-  if ((await requireCorrectTag()) === null) {
-    await github.rest.git.createRef({
-      owner,
-      repo,
-      ref: "refs/tags/" + tag,
-      sha: context.sha,
-    });
-  }
   if ((await requireCorrectTag()) !== context.sha) {
     throw new Error("Release tag is missing before publication.");
   }
@@ -281,6 +296,7 @@ module.exports = async ({ github, context, core }) => {
     owner,
     repo,
     release_id: release.id,
+    tag_name: tag,
     draft: false,
     make_latest: "true",
   });
