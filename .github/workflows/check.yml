@@ -27,6 +27,8 @@ jobs:
       - run: pnpm run notices
       - run: pnpm run build
       - run: pnpm test
+      - name: Exercise release publisher safeguards
+        run: node --test tests/publish-release.test.cjs
       - run: pnpm audit --audit-level=low
       - run: pnpm run release
       - run: pnpm run verify:package
