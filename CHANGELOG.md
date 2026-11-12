@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+Updated the bundled MCP SDK, Zod, turndown and compatible transitive dependencies, and refreshed third-party notices for the installed graph. The update also refreshes build and test dependencies. Collection behavior, SQLite schema and the five read-only MCP tools remain unchanged.
+
+The release workflow checks source and the same Linux-built archive on Windows, Linux and macOS before publishing the archive and SHA256 checksums. Existing releases remain unchanged.
+
 ## 1.0.0
 
 Defined the bounded local documentation/MCP contract, supported-source matrix and backup-first upgrade from 0.1.2. Sift's own source and bundled release are now MIT licensed; third-party notices retain their original licenses.

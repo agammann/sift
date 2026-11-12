@@ -4,7 +4,7 @@
 
 Collect the public documentation your project needs, search it locally, and let your coding assistant retrieve passages with source URLs and revision history through MCP.
 
-[Website](https://sift-docs.alx21.chatgpt.site/) · [Download 1.0.0](https://github.com/agammann/sift/releases/download/v1.0.0/sift-local-1.0.0.tgz) · [Getting started](docs/GETTING_STARTED.md) · [MCP setup](docs/MCP.md)
+[Website](https://sift-docs.alx21.chatgpt.site/) · [Download 1.0.1](https://github.com/agammann/sift/releases/download/v1.0.1/sift-local-1.0.1.tgz) · [Getting started](docs/GETTING_STARTED.md) · [MCP setup](docs/MCP.md)
 
 ## What Sift does
 
@@ -12,24 +12,24 @@ Collect the public documentation your project needs, search it locally, and let 
 2. **Inspect:** search retained pages, open their original sources, compare refresh outcomes, and read previous revisions.
 3. **Connect:** expose selected collections to a local coding assistant through five read only MCP tools.
 
-Sift 1.0.0 is a local application for one user. Your collections live in a SQLite database on your computer. No Sift account, model API key, paid service, or telemetry is required. Current immutable archives and checksums are available from GitHub Releases. The companion website retains earlier downloads; the application runs on your machine.
+Sift 1.0.1 is a local application for one user. Your collections live in a SQLite database on your computer. No Sift account, model API key, paid service, or telemetry is required. Current immutable archives and checksums are available from GitHub Releases. The companion website retains earlier downloads; the application runs on your machine.
 
 ## Quick start
 
 Requires **Node.js 24.15 or later within the Node 24 release line**. Select Node 24 on the [official download page](https://nodejs.org/en/download), then open a new terminal and check `node --version`. Node 22 and Node 25 or later are not supported by this release. Version 1.0 requires the exact release archive to pass clean CLI, HTTP interface and stdio MCP installation checks on Windows, Ubuntu 22.04 and macOS with Node 24.19.0. The browser walkthrough runs on Windows; see the [v1 contract](docs/V1.md) and [verification record](docs/verification-v1.md) for scope.
 
-1. Download the [Sift archive](https://github.com/agammann/sift/releases/download/v1.0.0/sift-local-1.0.0.tgz) and [SHA256 checksum](https://github.com/agammann/sift/releases/download/v1.0.0/sift-local-1.0.0.tgz.sha256).
+1. Download the [Sift archive](https://github.com/agammann/sift/releases/download/v1.0.1/sift-local-1.0.1.tgz) and [SHA256 checksum](https://github.com/agammann/sift/releases/download/v1.0.1/sift-local-1.0.1.tgz.sha256).
 2. Put the archive in a new folder you will keep, and open a terminal in that folder. See the [installation guide](docs/GETTING_STARTED.md) for checksum commands and Windows instructions.
 3. Extract and start Sift:
 
 ```sh
-tar -xzf sift-local-1.0.0.tgz
+tar -xzf sift-local-1.0.1.tgz
 node package/dist/cli.js version
 node package/dist/cli.js doctor
 node package/dist/cli.js start
 ```
 
-Expect `Sift 1.0.0`, a doctor result with `"ok": true`, and a startup message containing `http://127.0.0.1:4587`.
+Expect `Sift 1.0.1`, a doctor result with `"ok": true`, and a startup message containing `http://127.0.0.1:4587`.
 
 4. Open **http://127.0.0.1:4587** in your browser. Keep the terminal running. Press **Ctrl+C** to stop.
 
