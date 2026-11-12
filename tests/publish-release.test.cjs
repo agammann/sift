@@ -9,7 +9,7 @@ const publish = require("../scripts/publish-release.cjs");
 const sha = "c".repeat(40);
 const digest = (data) => "sha256:" + crypto.createHash("sha256").update(data).digest("hex");
 
-async function fixture({ existing = true, wrongTag = false, strayDraft = false, strayName = false, drift = false, providerResets = false } = {}) {
+async function fixture({ existing = true, wrongTag = false, strayDraft = false, strayName = false, drift = false, providerResets = false, lagReads = 0, observed = [] } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sift-publisher-test-"));
   const prev = process.cwd();
   const archive = Buffer.from("synthetic archive");
@@ -28,7 +28,10 @@ async function fixture({ existing = true, wrongTag = false, strayDraft = false, 
   const calls = [];
   let currentTag = existing ? (wrongTag ? "d".repeat(40) : sha) : null;
   let release = existing ? {id:42,tag_name:"v1.0.1",target_commitish:sha,draft:true,prerelease:false} : null;
-  let releases = strayDraft ? [{id:43,tag_name:"untagged-test",target_commitish:strayName ? "f".repeat(40) : sha,name:strayName ? "Sift 1.0.1" : "Other",draft:true}] : release ? [release] : [];
+  let releases = release ? [release] : [];
+  if (strayDraft) releases.push({id:43,tag_name:"untagged-test",target_commitish:strayName ? "f".repeat(40) : sha,name:strayName ? "Sift 1.0.1" : "Other",draft:true});
+  let tagCreated = false;
+  let readsAfterCreate = 0;
   let assets = existing ? payloads.map((p,i)=>({id:i+1,name:p.name,digest:digest(p.data),size:p.data.length,state:"uploaded"})) : [];
   let branchCalls = 0;
   const data = (x) => ({data:x});
@@ -58,8 +61,8 @@ async function fixture({ existing = true, wrongTag = false, strayDraft = false, 
       deleteReleaseAsset: async () => { throw new Error("Unexpected asset deletion"); },
     },
     git: {
-      getRef: async () => { if (!currentTag) throw Object.assign(new Error("missing"),{status:404}); return data({object:{type:"commit",sha:currentTag}}); },
-      createRef: async (p) => { calls.push(["createRef",p]); assert.equal(currentTag,null); currentTag=p.sha; return data({}); },
+      getRef: async () => { if (!currentTag || (tagCreated && readsAfterCreate++ < lagReads)) throw Object.assign(new Error("missing"),{status:404}); return data({object:{type:"commit",sha:currentTag}}); },
+      createRef: async (p) => { calls.push(["createRef",p]); observed.push("createRef"); assert.equal(currentTag,null); currentTag=p.sha; tagCreated=true; return data({}); },
       getTag: async () => { throw new Error("Unexpected annotated tag"); },
     },
   };
@@ -107,4 +110,28 @@ test("stops before asset upload when provider loses draft tag", async () => {
 
 test("refuses an untagged draft using the same release name", async () => {
   await assert.rejects(fixture({existing:false,strayDraft:true,strayName:true}),/untagged draft/);
+});
+
+
+test("refuses ambiguous untagged draft alongside matching draft", async () => {
+  await assert.rejects(fixture({existing:true,strayDraft:true}),/untagged draft/);
+});
+
+test("waits for a newly created tag to become visible", async () => {
+  const original = global.setTimeout;
+  global.setTimeout = (fn) => original(fn, 0);
+  try {
+    const {calls}=await fixture({existing:false,lagReads:2});
+    assert.equal(calls.filter(([name])=>name==="createRef").length,1);
+  } finally { global.setTimeout=original; }
+});
+
+test("fails closed if a newly created tag remains invisible", async () => {
+  const original = global.setTimeout;
+  global.setTimeout = (fn) => original(fn, 0);
+  try {
+    const observed=[];
+    await assert.rejects(fixture({existing:false,lagReads:100,observed}),/tag is missing/);
+    assert.deepEqual(observed,["createRef"]);
+  } finally { global.setTimeout=original; }
 });
