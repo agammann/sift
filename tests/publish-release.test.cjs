@@ -29,7 +29,7 @@ async function fixture({ existing = true, wrongTag = false, strayDraft = false, 
   let currentTag = existing ? (wrongTag ? "d".repeat(40) : sha) : null;
   let release = existing ? {id:42,tag_name:"v1.0.1",target_commitish:sha,draft:true,prerelease:false} : null;
   let releases = release ? [release] : [];
-  if (strayDraft) releases.push({id:43,tag_name:"untagged-test",target_commitish:(strayName || unrelatedDraft) ? "f".repeat(40) : sha,name:strayName ? "Sift 1.0.1" : "Other",draft:true});
+  if (strayDraft) releases.push({id:43,tag_name:"untagged-test",target_commitish:(strayName || unrelatedDraft) ? "f".repeat(40) : sha,name:strayName ? "Sift 1.0.1" : unrelatedDraft ? "Sift 1.0.0" : "Other",draft:true});
   let tagCreated = false;
   let readsAfterCreate = 0;
   let assets = existing ? payloads.map((p,i)=>({id:i+1,name:p.name,digest:digest(p.data),size:p.data.length,state:"uploaded"})) : [];
