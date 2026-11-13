@@ -18,8 +18,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24.19.0
       - run: npm install --global pnpm@11.19.0
@@ -34,7 +34,7 @@ jobs:
       - run: pnpm run verify:package
       - name: Keep the tested Linux release archive
         if: matrix.os == 'ubuntu-22.04'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: sift-release
           path: |
@@ -52,21 +52,73 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24.19.0
       - run: npm install --global pnpm@11.19.0
       - run: pnpm install --frozen-lockfile
-      - name: Download the exact Linux archive from this checked run
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+      - name: Download the Linux archive (first attempt)
+        id: download1
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: sift-release
+          path: artifacts
+      - name: Wait before second attempt
+        if: steps.download1.outcome == 'failure'
+        shell: bash
+        run: sleep 10
+      - name: Download the Linux archive (second attempt)
+        id: download2
+        if: steps.download1.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: sift-release
+          path: artifacts
+      - name: Wait before final attempt
+        if: steps.download2.outcome == 'failure'
+        shell: bash
+        run: sleep 20
+      - name: Download the Linux archive (final attempt)
+        if: steps.download2.outcome == 'failure'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: sift-release
           path: artifacts
       - run: pnpm run verify:package
+      - name: Exercise github-script with a no-write release fixture
+        if: matrix.os == 'ubuntu-22.04'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const publish = require('./scripts/publish-release.cjs');
+            const version = require('./package.json').version;
+            const messages = [];
+            const fixtureGithub = { rest: { repos: { listReleases() {} } },
+              paginate: async () => [{ tag_name: 'v' + version, draft: false }] };
+            const fixtureContext = { eventName: 'push', ref: 'refs/heads/main', sha: 'a'.repeat(40),
+              repo: { owner: 'fixture', repo: 'fixture' } };
+            await publish({ github: fixtureGithub, context: fixtureContext, core: { info: message => messages.push(message) } });
+            if (!messages.some(message => message.includes('already published; leaving it unchanged')))
+              throw new Error('Published release guard did not return as expected');
+  artifact_missing_guard:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - name: Probe a nonexistent artifact
+        id: missing
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: sift-nonexistent-transfer-guard
+      - name: Reject an unexpected missing-artifact result
+        if: always() && steps.missing.outcome != 'failure'
+        run: exit 1
   publish:
     name: Publish verified release
-    needs: [verify, package_acceptance]
+    needs: [verify, package_acceptance, artifact_missing_guard]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
@@ -75,14 +127,38 @@ jobs:
       group: sift-release
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Read the same accepted archive
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Read the accepted archive (first attempt)
+        id: download1
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: sift-release
+          path: release-artifacts
+      - name: Wait before second attempt
+        if: steps.download1.outcome == 'failure'
+        run: sleep 10
+      - name: Read the accepted archive (second attempt)
+        id: download2
+        if: steps.download1.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: sift-release
+          path: release-artifacts
+      - name: Wait before final attempt
+        if: steps.download2.outcome == 'failure'
+        run: sleep 20
+      - name: Read the accepted archive (final attempt)
+        if: steps.download2.outcome == 'failure'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: sift-release
           path: release-artifacts
       - name: Publish complete archive and checksum assets
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const publish = require('./scripts/publish-release.cjs');
