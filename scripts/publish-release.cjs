@@ -131,7 +131,7 @@ module.exports = async ({ github, context, core }) => {
 
   const changelog = fs
     .readFileSync("CHANGELOG.md", "utf8")
-    .replaceAll("\n", "\n");
+    .replaceAll("\r\n", "\n");
   const heading = "## " + version + "\n";
   if (!changelog.includes(heading))
     throw new Error("Changelog has no release section.");
