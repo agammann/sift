@@ -12,7 +12,7 @@ Install **Node.js 24.15 or later within Node 24** from the [official Node.js dow
 node --version
 ```
 
-Expect `v24.15.0` or a newer `v24.x.x`. Other major versions are not supported by Sift 1.0.2. The release workflow requires the exact archive to pass clean CLI, HTTP interface and stdio MCP installation checks on Windows, Ubuntu 22.04 and macOS with Node 24.19.0. See the [v1 checks](verification-v1.md) and [supported-source matrix](V1.md#supported-sources-and-delivery).
+Expect `v24.15.0` or a newer `v24.x.x`. Other major versions are not supported by Sift 1.0.2. The release workflow requires the exact archive to pass clean CLI, HTTP interface and stdio MCP installation checks on Windows, Ubuntu 22.04 and macOS with Node 24.19.0. See the [v1 checks](verification-v1.md) and [supported-source matrix](V1.md#supported-sources-and-delivery). The current development checkout additionally supports Node 26.13.1 or later within Node 26; the published 1.0.2 archive does not.
 
 ## Download and verify
 

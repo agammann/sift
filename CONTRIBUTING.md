@@ -6,7 +6,7 @@ Use this guide to build Sift from source. To use the packaged application, start
 
 ## Set up a checkout
 
-Requires Git, Node.js 24.15 or later within Node 24, and **pnpm 11.19.0**. Verify `node --version` first. If pnpm is not installed, install that exact version with `npm install --global pnpm@11.19.0`, then reopen the terminal. On Windows, `npm.cmd` and `pnpm.cmd` can be used if PowerShell blocks script shims.
+Requires Git, Node.js 24.15 or later within Node 24 or 26.13.1 or later within Node 26, and **pnpm 11.19.0**. The published 1.0.2 archive supports Node 24 only. Verify `node --version` first. If pnpm is not installed, install that exact version with `npm install --global pnpm@11.19.0`, then reopen the terminal. On Windows, `npm.cmd` and `pnpm.cmd` can be used if PowerShell blocks script shims.
 
 ```sh
 git clone https://github.com/agammann/sift.git

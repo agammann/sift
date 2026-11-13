@@ -362,7 +362,7 @@ LICENSE
 
 
 
-## @types/node@24.13.3
+## @types/node@26.6.6
 
 Declared license: "MIT"
 
@@ -8714,7 +8714,7 @@ SOFTWARE.
 
 
 
-## undici-types@7.18.2
+## undici-types@8.9.0
 
 Declared license: "MIT"
 

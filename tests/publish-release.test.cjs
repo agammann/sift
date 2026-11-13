@@ -9,7 +9,7 @@ const publish = require("../scripts/publish-release.cjs");
 const sha = "c".repeat(40);
 const digest = (data) => "sha256:" + crypto.createHash("sha256").update(data).digest("hex");
 
-async function fixture({ existing = true, wrongTag = false, strayDraft = false, strayName = false, drift = false, providerResets = false, lagReads = 0, observed = [], unrelatedDraft = false } = {}) {
+async function fixture({ existing = true, wrongTag = false, strayDraft = false, strayName = false, drift = false, providerResets = false, lagReads = 0, observed = [], unrelatedDraft = false, crlf = false } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sift-publisher-test-"));
   const prev = process.cwd();
   const archive = Buffer.from("synthetic archive");
@@ -22,7 +22,7 @@ async function fixture({ existing = true, wrongTag = false, strayDraft = false, 
   fs.mkdirSync(path.join(dir, "release-artifacts"));
   for (const file of payloads) fs.writeFileSync(path.join(dir, "release-artifacts", file.name), file.data);
   fs.writeFileSync(path.join(dir, "package.json"), JSON.stringify({version:"1.0.1"}));
-  fs.writeFileSync(path.join(dir, "CHANGELOG.md"), "## 1.0.1\n\nSynthetic notes.\n");
+  fs.writeFileSync(path.join(dir, "CHANGELOG.md"), crlf ? "## 1.0.1\r\n\r\nSynthetic notes.\r\n" : "## 1.0.1\n\nSynthetic notes.\n");
   process.chdir(dir);
 
   const calls = [];
@@ -83,6 +83,12 @@ test("existing draft preserves its exact tag through both updates", async () => 
   assert.ok(updates.every((args)=>args.tag_name==="v1.0.1"));
   assert.equal(release.tag_name,"v1.0.1");
   assert.equal(release.draft,false);
+});
+
+test("reads release notes from a CRLF changelog", async () => {
+  const { calls } = await fixture({ crlf: true });
+  const updates = calls.filter(([name]) => name === "updateRelease").map(([, args]) => args);
+  assert.ok(updates.some((args) => args.body.includes("Synthetic notes.")));
 });
 
 test("new tag exists before the draft is created", async () => {

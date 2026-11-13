@@ -15,13 +15,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-22.04, macos-latest]
+        node: ["24.15.0", "26.13.1"]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 24.19.0
+          node-version: ${{ matrix.node }}
       - run: npm install --global pnpm@11.19.0
       - run: pnpm install --frozen-lockfile
       - run: pnpm run notices
@@ -33,7 +34,7 @@ jobs:
       - run: pnpm run release
       - run: pnpm run verify:package
       - name: Keep the tested Linux release archive
-        if: matrix.os == 'ubuntu-22.04'
+        if: matrix.os == 'ubuntu-22.04' && matrix.node == '24.15.0'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: sift-release
@@ -42,20 +43,65 @@ jobs:
             artifacts/sift-local-*.tgz.sha256
             artifacts/SHA256SUMS
           if-no-files-found: error
+  node24-types:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.15.0
+      - run: npm install --global pnpm@11.19.0
+      - run: pnpm install --frozen-lockfile
+      - name: Verify the Node 24 API type floor
+        shell: bash
+        run: |
+          printf 'import { create } from "node:vfs"; create();\n' > "$RUNNER_TEMP/sift-node26-only.ts"
+          args=(--ignoreConfig --noEmit --skipLibCheck --module NodeNext --moduleResolution NodeNext --target ES2023 --types node --typeRoots "$GITHUB_WORKSPACE/node_modules/@types" "$RUNNER_TEMP/sift-node26-only.ts")
+          pnpm exec tsc "${args[@]}"
+          pnpm add --save-dev --save-exact --ignore-scripts @types/node@24.13.3
+          node -e 'if (require("./node_modules/@types/node/package.json").version !== "24.13.3") process.exit(1)'
+          if pnpm exec tsc "${args[@]}" > "$RUNNER_TEMP/sift-node24-probe.log" 2>&1; then
+            echo 'Node 24 declarations unexpectedly accepted node:vfs'
+            exit 1
+          fi
+          grep -F 'TS2307' "$RUNNER_TEMP/sift-node24-probe.log"
+          grep -F 'node:vfs' "$RUNNER_TEMP/sift-node24-probe.log"
+          pnpm exec tsc --noEmit
+  node-compatibility:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.15.0
+      - run: npm install --global pnpm@11.19.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec tsx scripts/test-node-compat.ts seed "$RUNNER_TEMP/sift-node-fixture-${{ github.run_id }}-${{ github.run_attempt }}"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.1
+      - run: pnpm exec tsx scripts/test-node-compat.ts upgrade "$RUNNER_TEMP/sift-node-fixture-${{ github.run_id }}-${{ github.run_attempt }}"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.15.0
+      - run: pnpm exec tsx scripts/test-node-compat.ts rollback "$RUNNER_TEMP/sift-node-fixture-${{ github.run_id }}-${{ github.run_attempt }}"
   package_acceptance:
-    name: Released archive on ${{ matrix.os }}
+    name: Released archive on ${{ matrix.os }} / Node ${{ matrix.node }}
     needs: verify
     strategy:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-22.04, macos-latest]
+        node: ["24.15.0", "26.13.1"]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 24.19.0
+          node-version: ${{ matrix.node }}
       - run: npm install --global pnpm@11.19.0
       - run: pnpm install --frozen-lockfile
       - name: Download the Linux archive (first attempt)
@@ -89,7 +135,7 @@ jobs:
           path: artifacts
       - run: pnpm run verify:package
       - name: Exercise github-script with a no-write release fixture
-        if: matrix.os == 'ubuntu-22.04'
+        if: matrix.os == 'ubuntu-22.04' && matrix.node == '24.15.0'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
@@ -118,7 +164,7 @@ jobs:
         run: exit 1
   publish:
     name: Publish verified release
-    needs: [verify, package_acceptance, artifact_missing_guard]
+    needs: [verify, node24-types, node-compatibility, package_acceptance, artifact_missing_guard]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:

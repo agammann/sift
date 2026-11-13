@@ -1,6 +1,6 @@
 # Repeatable local release procedure
 
-Use a clean source checkout, Node 24.15 or later within Node 24, and pnpm 11.19.0. Start with the [development guide](../CONTRIBUTING.md). Run all commands from the repository root.
+Use a clean source checkout, Node 24.15 or later within Node 24 or 26.13.1 or later within Node 26, and pnpm 11.19.0. Start with the [development guide](../CONTRIBUTING.md). Run all commands from the repository root.
 
 1. Update the package version and the version constant in `src/model.ts`; update the changelog and current download links in README and Getting started. The UI displays the backend's version. Keep historical verification reports and old artifact checksums unchanged.
 2. Install with `pnpm install --frozen-lockfile`.
