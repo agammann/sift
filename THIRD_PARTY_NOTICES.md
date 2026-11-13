@@ -393,7 +393,7 @@ LICENSE
 
 
 
-## @types/react-dom@19.2.7
+## @types/react-dom@19.3.0
 
 Declared license: "MIT"
 
@@ -424,7 +424,7 @@ LICENSE
 
 
 
-## @types/react@19.2.18
+## @types/react@19.3.0
 
 Declared license: "MIT"
 
@@ -6911,7 +6911,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-## prettier@3.9.6
+## prettier@3.9.10
 
 Declared license: "MIT"
 
@@ -7096,7 +7096,7 @@ THE SOFTWARE.
 
 
 
-## react-dom@19.2.8
+## react-dom@19.3.1
 
 Declared license: "MIT"
 
@@ -7158,7 +7158,7 @@ SOFTWARE.
 
 
 
-## react@19.2.8
+## react@19.3.1
 
 Declared license: "MIT"
 
@@ -7476,7 +7476,7 @@ SOFTWARE.
 
 
 
-## scheduler@0.27.0
+## scheduler@0.28.0
 
 Declared license: "MIT"
 
@@ -8084,7 +8084,7 @@ THE SOFTWARE.
 
 
 
-## tsx@4.23.13
+## tsx@4.23.15
 
 Declared license: "MIT"
 
@@ -8145,7 +8145,7 @@ SOFTWARE.
 
 
 
-## turndown@7.2.4
+## turndown@7.2.5
 
 Declared license: "MIT"
 
