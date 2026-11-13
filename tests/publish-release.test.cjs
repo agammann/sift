@@ -9,7 +9,7 @@ const publish = require("../scripts/publish-release.cjs");
 const sha = "c".repeat(40);
 const digest = (data) => "sha256:" + crypto.createHash("sha256").update(data).digest("hex");
 
-async function fixture({ existing = true, wrongTag = false, strayDraft = false, strayName = false, drift = false, providerResets = false, lagReads = 0, observed = [] } = {}) {
+async function fixture({ existing = true, wrongTag = false, strayDraft = false, strayName = false, drift = false, providerResets = false, lagReads = 0, observed = [], unrelatedDraft = false } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sift-publisher-test-"));
   const prev = process.cwd();
   const archive = Buffer.from("synthetic archive");
@@ -29,7 +29,7 @@ async function fixture({ existing = true, wrongTag = false, strayDraft = false, 
   let currentTag = existing ? (wrongTag ? "d".repeat(40) : sha) : null;
   let release = existing ? {id:42,tag_name:"v1.0.1",target_commitish:sha,draft:true,prerelease:false} : null;
   let releases = release ? [release] : [];
-  if (strayDraft) releases.push({id:43,tag_name:"untagged-test",target_commitish:strayName ? "f".repeat(40) : sha,name:strayName ? "Sift 1.0.1" : "Other",draft:true});
+  if (strayDraft) releases.push({id:43,tag_name:"untagged-test",target_commitish:(strayName || unrelatedDraft) ? "f".repeat(40) : sha,name:strayName ? "Sift 1.0.1" : "Other",draft:true});
   let tagCreated = false;
   let readsAfterCreate = 0;
   let assets = existing ? payloads.map((p,i)=>({id:i+1,name:p.name,digest:digest(p.data),size:p.data.length,state:"uploaded"})) : [];
@@ -45,7 +45,7 @@ async function fixture({ existing = true, wrongTag = false, strayDraft = false, 
         calls.push(["createRelease",p]);
         assert.equal(currentTag,sha,"tag must exist before creating draft");
         release={id:42,tag_name:p.tag_name,target_commitish:p.target_commitish,draft:true,prerelease:false};
-        releases=[release]; return data(release);
+        releases.push(release); return data(release);
       },
       updateRelease: async (p) => {
         calls.push(["updateRelease",p]);
@@ -134,4 +134,10 @@ test("fails closed if a newly created tag remains invisible", async () => {
     await assert.rejects(fixture({existing:false,lagReads:100,observed}),/tag is missing/);
     assert.deepEqual(observed,["createRef"]);
   } finally { global.setTimeout=original; }
+});
+
+
+test("preserves an unrelated older untagged draft", async () => {
+  const {calls}=await fixture({existing:false,strayDraft:true,unrelatedDraft:true});
+  assert.equal(calls.filter(([name])=>name==="createRelease").length,1);
 });
