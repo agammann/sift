@@ -131,14 +131,14 @@ module.exports = async ({ github, context, core }) => {
 
   const changelog = fs
     .readFileSync("CHANGELOG.md", "utf8")
-    .replaceAll("\r\n", "\n");
+    .replaceAll("\n", "\n");
   const heading = "## " + version + "\n";
   if (!changelog.includes(heading))
     throw new Error("Changelog has no release section.");
   const notes = changelog.split(heading)[1].split("\n## ")[0].trim();
   const body =
     notes +
-    "\n\nDownload the tested local archive and verify its SHA256 checksum before extracting it. The archive includes the built interface, bundled backend, MIT license and third-party notices; Node 24.15 or newer within Node 24 is required. No npm runtime dependencies or install scripts are needed. This release does not publish a registry package.\n\n" +
+    "\n\nDownload the tested local archive and verify its SHA256 checksum before extracting it. The archive includes the built interface, bundled backend, MIT license and third-party notices; Node 24.15 or newer within Node 24 or Node 26.13.1 or newer within Node 26 is required. No npm runtime dependencies or install scripts are needed. This release does not publish a registry package.\n\n" +
     "[Installation and upgrade instructions](https://github.com/" +
     owner +
     "/" +

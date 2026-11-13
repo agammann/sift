@@ -57,7 +57,7 @@ Completed page transactions survive cancellation/restart. On management startup,
 - **Blocked destination:** Private/local/reserved IPs and DNS mixtures are intentionally rejected. Fixtures use an injected transport in tests; there is no setting that disables the production boundary.
 - **Database busy:** Let the active transaction finish. Stop the manager before CLI backup/restore/doctor. An MCP reader can remain connected. Locks have a 5-second busy timeout.
 - **Disk full or permission error:** The operation does not report success. Free disk space or restore directory permissions, then run doctor and inspect the job. Atomic page/restore writes roll back. OS-level storage failures can still prevent recording the final job error; restart recovery will mark an unfinished job interrupted.
-- **MCP fails to start:** Check Node 24, absolute executable paths, database path and explicit collection IDs. Stdout must remain MCP-only. Read stderr and use Connect diagnostics.
+- **MCP fails to start:** Check the Node version supported by your installed archive or checkout, absolute executable paths, database path and explicit collection IDs. Stdout must remain MCP-only. Read stderr and use Connect diagnostics.
 - **Empty search:** Queries are lexical AND searches. Use fewer words; remove filters; verify the source contains successful active pages.
 - **Wrong version:** Labels are user supplied. Create separate sources with appropriate URL paths and labels; never relabel collected evidence as another version without recollecting.
 - **Port in use:** Choose `sift start --port 4588` and visit the matching 127.0.0.1 URL. `localhost` is deliberately not an interchangeable Host alias for this service.
