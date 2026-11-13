@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2
+
+Includes the bundled MCP SDK, Zod, turndown and compatible transitive dependency updates prepared for the unpublished 1.0.1 release, together with refreshed third-party notices and build dependencies. Collection behavior, the SQLite schema and the five read-only MCP tools remain unchanged.
+
+Hardens release publication by establishing and verifying the intended tag before creating a draft, preserving tag identity during release updates, and stopping on ambiguous draft or commit state. The workflow verifies source and the same Linux-built archive on Windows, Linux and macOS before publishing the archive and SHA256 checksums.
+
 ## 1.0.1
 
 Updated the bundled MCP SDK, Zod, turndown and compatible transitive dependencies, and refreshed third-party notices for the installed graph. The update also refreshes build and test dependencies. Collection behavior, SQLite schema and the five read-only MCP tools remain unchanged.
