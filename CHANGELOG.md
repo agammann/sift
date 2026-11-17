@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.3
+
+Delivers the previously unreleased Node 26 support while preserving the Node 24.15 floor, with source and exact-archive checks on Windows, Ubuntu and macOS plus Node 24-to-26-to-24 data compatibility checks. The bundled runtime remains dependency-free at installation.
+
+Includes the React 19.3.1 and Vite 8.3.7 updates already prepared on main, with regenerated notices from the current locked graph.
+
+Aligns the current downloads, SDK documentation and supported-runtime guide with this delivery. Corrects the generated third-party notice introduction to acknowledge Sift’s existing MIT license while preserving upstream license text. Collection behavior, SQLite schema, extraction and the five read-only stdio MCP tools are unchanged.
+
 ## 1.0.2
 
 Includes the bundled MCP SDK, Zod, turndown and compatible transitive dependency updates prepared for the unpublished 1.0.1 release, together with refreshed third-party notices and build dependencies. Collection behavior, the SQLite schema and the five read-only MCP tools remain unchanged.

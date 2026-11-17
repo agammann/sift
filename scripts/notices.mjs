@@ -54,7 +54,7 @@ for (const path of paths) {
 }
 await writeFile(
   "THIRD_PARTY_NOTICES.md",
-  `# Third-party notices\n\nGenerated from the exact installed dependency tree, including development tools. Upstream license text is preserved. This does not license Sift itself; Sift ownership and licensing remain the owner's decision.\n\n${linkNote}\n\n${[
+  `# Third-party notices\n\nGenerated from the exact installed dependency tree, including development tools. Upstream license text is preserved. Sift itself is licensed under MIT; see LICENSE. These notices preserve the separate licenses of its dependencies.\n\n${linkNote}\n\n${[
     ...packages.entries(),
   ]
     .sort(([a], [b]) => a.localeCompare(b))
