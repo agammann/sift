@@ -2,32 +2,32 @@
 
 [Back to the README](../README.md)
 
-This guide takes you from the downloadable archive to a searchable collection. Sift runs on your computer. The [public website](https://sift-docs.alx21.chatgpt.site/) provides information and earlier downloads. Use the pinned [GitHub release](https://github.com/agammann/sift/releases/tag/v1.0.2) for the current archive.
+This guide takes you from the downloadable archive to a searchable collection. Sift runs on your computer. The [public website](https://sift-docs.alx21.chatgpt.site/) provides information and versioned downloads. Use the pinned [GitHub release](https://github.com/agammann/sift/releases/tag/v1.0.3) for the current archive.
 
 ## Before you begin
 
-Install **Node.js 24.15 or later within Node 24** from the [official Node.js download page](https://nodejs.org/en/download). Select the 24 release line. Open a new terminal after installation, then run:
+Install **Node.js 24.15 or later within Node 24, or 26.13.1 or later within Node 26** from the [official Node.js download page](https://nodejs.org/en/download). Select one of those supported release lines. Open a new terminal after installation, then run:
 
 ```sh
 node --version
 ```
 
-Expect `v24.15.0` or a newer `v24.x.x`. Other major versions are not supported by Sift 1.0.2. The release workflow requires the exact archive to pass clean CLI, HTTP interface and stdio MCP installation checks on Windows, Ubuntu 22.04 and macOS with Node 24.19.0. See the [v1 checks](verification-v1.md) and [supported-source matrix](V1.md#supported-sources-and-delivery). The current development checkout additionally supports Node 26.13.1 or later within Node 26; the published 1.0.2 archive does not.
+Expect `v24.15.0` or a newer `v24.x.x`, or `v26.13.1` or a newer `v26.x.x`. Other major versions are unsupported. The release workflow checks source and the same archive on Windows, Ubuntu 22.04 and macOS at both supported Node floors. See the dated [v1 checks](verification-v1.md) and [supported-source matrix](V1.md#supported-sources-and-delivery). The older published 1.0.2 archive supports Node 24 only.
 
 ## Download and verify
 
 Download both files into the same new folder, such as a folder named `Sift` in your Documents directory:
 
-1. [sift-local-1.0.2.tgz](https://github.com/agammann/sift/releases/download/v1.0.2/sift-local-1.0.2.tgz)
-2. [sift-local-1.0.2.tgz.sha256](https://github.com/agammann/sift/releases/download/v1.0.2/sift-local-1.0.2.tgz.sha256)
+1. [sift-local-1.0.3.tgz](https://github.com/agammann/sift/releases/download/v1.0.3/sift-local-1.0.3.tgz)
+2. [sift-local-1.0.3.tgz.sha256](https://github.com/agammann/sift/releases/download/v1.0.3/sift-local-1.0.3.tgz.sha256)
 
 Keep their original filenames. Open a terminal in that folder. On Windows, open the folder in File Explorer, right click an empty area, and choose **Open in Terminal**. Use a fresh folder so extraction will not overwrite another application named `package`.
 
 In **PowerShell**, compare the download with its checksum:
 
 ```powershell
-$siftExpectedHash = ((Get-Content .\sift-local-1.0.2.tgz.sha256 -Raw).Trim() -split '\s+')[0]
-$siftActualHash = (Get-FileHash .\sift-local-1.0.2.tgz -Algorithm SHA256).Hash
+$siftExpectedHash = ((Get-Content .\sift-local-1.0.3.tgz.sha256 -Raw).Trim() -split '\s+')[0]
+$siftActualHash = (Get-FileHash .\sift-local-1.0.3.tgz -Algorithm SHA256).Hash
 if ($siftActualHash -ne $siftExpectedHash) { throw 'Checksum mismatch. Download the archive again.' }
 'Checksum matches.'
 ```
@@ -35,13 +35,13 @@ if ($siftActualHash -ne $siftExpectedHash) { throw 'Checksum mismatch. Download 
 On **macOS**, use:
 
 ```sh
-shasum -a 256 -c sift-local-1.0.2.tgz.sha256
+shasum -a 256 -c sift-local-1.0.3.tgz.sha256
 ```
 
 On **Linux**, use:
 
 ```sh
-sha256sum -c sift-local-1.0.2.tgz.sha256
+sha256sum -c sift-local-1.0.3.tgz.sha256
 ```
 
 Expect `Checksum matches.` in PowerShell, or a result ending in `OK` on macOS/Linux. A mismatch means the file does not match the published checksum; do not continue with that copy.
@@ -51,7 +51,7 @@ Expect `Checksum matches.` in PowerShell, or a result ending in `OK` on macOS/Li
 From the same folder:
 
 ```sh
-tar -xzf sift-local-1.0.2.tgz
+tar -xzf sift-local-1.0.3.tgz
 node package/dist/cli.js version
 node package/dist/cli.js doctor
 node package/dist/cli.js start
@@ -61,7 +61,7 @@ The archive creates a `package` folder. Keep it where you intend to run Sift, es
 
 | Step | Expected result |
 | --- | --- |
-| `version` | `Sift 1.0.2` |
+| `version` | `Sift 1.0.3` |
 | `doctor` | JSON containing `"ok": true`, `"integrity": "ok"`, and the database path |
 | `start` | A message containing `http://127.0.0.1:4587` and the data path |
 
@@ -108,7 +108,7 @@ Version labels describe what you know about the source; Sift does not infer vers
 If Node's npm command is available, you can install the downloaded archive globally instead of using its extracted CLI:
 
 ```sh
-npm install --global ./sift-local-1.0.2.tgz
+npm install --global ./sift-local-1.0.3.tgz
 sift version
 sift doctor
 sift start
