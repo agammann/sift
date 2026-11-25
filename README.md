@@ -4,7 +4,7 @@
 
 Collect the public documentation your project needs, search it locally, and let your coding assistant retrieve passages with source URLs and revision history through MCP.
 
-[Website](https://sift-docs.alx21.chatgpt.site/) · [Download 1.0.2](https://github.com/agammann/sift/releases/download/v1.0.2/sift-local-1.0.2.tgz) · [Getting started](docs/GETTING_STARTED.md) · [MCP setup](docs/MCP.md)
+[Website](https://sift-docs.alx21.chatgpt.site/) · [Download 1.0.3](https://github.com/agammann/sift/releases/download/v1.0.3/sift-local-1.0.3.tgz) · [Getting started](docs/GETTING_STARTED.md) · [MCP setup](docs/MCP.md)
 
 ## What Sift does
 
@@ -12,24 +12,24 @@ Collect the public documentation your project needs, search it locally, and let 
 2. **Inspect:** search retained pages, open their original sources, compare refresh outcomes, and read previous revisions.
 3. **Connect:** expose selected collections to a local coding assistant through five read only MCP tools.
 
-Sift 1.0.2 is a local application for one user. Your collections live in a SQLite database on your computer. No Sift account, model API key, paid service, or telemetry is required. Current immutable archives and checksums are available from GitHub Releases. The companion website retains earlier downloads; the application runs on your machine.
+Sift 1.0.3 is a local application for one user. Your collections live in a SQLite database on your computer. No Sift account, model API key, paid service, or telemetry is required. Current immutable archives and checksums are available from GitHub Releases. The companion website retains versioned downloads; the application runs on your machine.
 
 ## Quick start
 
-Requires **Node.js 24.15 or later within the Node 24 release line**. Select Node 24 on the [official download page](https://nodejs.org/en/download), then open a new terminal and check `node --version`. Node 22 and Node 25 or later are not supported by this release. Version 1.0 requires the exact release archive to pass clean CLI, HTTP interface and stdio MCP installation checks on Windows, Ubuntu 22.04 and macOS with Node 24.19.0. The browser walkthrough runs on Windows; see the [v1 contract](docs/V1.md) and [verification record](docs/verification-v1.md) for scope. The current development checkout additionally supports Node 26.13.1 or later within Node 26; that support is not in the published 1.0.2 archive.
+Requires **Node.js 24.15 or later within Node 24, or 26.13.1 or later within Node 26**. Select a supported release line on the [official download page](https://nodejs.org/en/download), then open a new terminal and check `node --version`. Other major versions are unsupported. The release workflow checks source and the same Linux-built archive on Windows, Ubuntu 22.04 and macOS at both supported Node floors. The browser walkthrough has been exercised on Windows; see the [v1 contract](docs/V1.md) and dated [verification record](docs/verification-v1.md) for scope. The older published 1.0.2 archive supports Node 24 only.
 
-1. Download the [Sift archive](https://github.com/agammann/sift/releases/download/v1.0.2/sift-local-1.0.2.tgz) and [SHA256 checksum](https://github.com/agammann/sift/releases/download/v1.0.2/sift-local-1.0.2.tgz.sha256).
+1. Download the [Sift archive](https://github.com/agammann/sift/releases/download/v1.0.3/sift-local-1.0.3.tgz) and [SHA256 checksum](https://github.com/agammann/sift/releases/download/v1.0.3/sift-local-1.0.3.tgz.sha256).
 2. Put the archive in a new folder you will keep, and open a terminal in that folder. See the [installation guide](docs/GETTING_STARTED.md) for checksum commands and Windows instructions.
 3. Extract and start Sift:
 
 ```sh
-tar -xzf sift-local-1.0.2.tgz
+tar -xzf sift-local-1.0.3.tgz
 node package/dist/cli.js version
 node package/dist/cli.js doctor
 node package/dist/cli.js start
 ```
 
-Expect `Sift 1.0.2`, a doctor result with `"ok": true`, and a startup message containing `http://127.0.0.1:4587`.
+Expect `Sift 1.0.3`, a doctor result with `"ok": true`, and a startup message containing `http://127.0.0.1:4587`.
 
 4. Open **http://127.0.0.1:4587** in your browser. Keep the terminal running. Press **Ctrl+C** to stop.
 
@@ -59,7 +59,7 @@ For a small, repeatable walkthrough, use the [one page first collection](docs/GE
 | Build from source or propose a change | [Development and contributions](CONTRIBUTING.md) |
 | Understand crawling, storage, and access boundaries | [Architecture](docs/ARCHITECTURE.md) |
 | Understand supported sources, stable interfaces and upgrade | [v1 contract](docs/V1.md) |
-| See what was tested and what remains unverified | [v1 checks](docs/verification-v1.md) · [October 2 acceptance checks](docs/verification-2026-10-02.md) · [0.1.1 checks](docs/REAL_WORLD_VERIFICATION.md) · [0.1.0 report](docs/VERIFICATION.md) |
+| See what was tested and what remains unverified | [November 17 local checks](docs/verification-2026-11-17.md) · [v1 checks](docs/verification-v1.md) · [October 2 acceptance checks](docs/verification-2026-10-02.md) · [0.1.1 checks](docs/REAL_WORLD_VERIFICATION.md) · [0.1.0 report](docs/VERIFICATION.md) |
 | Prepare a release | [Release procedure](docs/RELEASING.md) |
 | See release history and dependency notices | [Changelog](CHANGELOG.md) · [Third party notices](THIRD_PARTY_NOTICES.md) |
 
